@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, type ReactElement } from "react"
 import {
   InitialConfigType,
   LexicalComposer,
@@ -34,6 +34,14 @@ function createEditorConfig(nodes: InitialConfigType["nodes"]) {
   } satisfies Omit<InitialConfigType, "editable" | "editorState">
 }
 
+type EditorPluginsProps = {
+  readOnly?: boolean
+  placeholder?: string
+  stickyTop?: number
+}
+
+type EditorPluginsComponent = (props: EditorPluginsProps) => ReactElement
+
 export function Editor({
   editorState,
   editorSerializedState,
@@ -57,18 +65,16 @@ export function Editor({
 
   const [config, setConfig] = useState<{
     nodes: InitialConfigType["nodes"]
-    Plugins: React.ComponentType<{
-      readOnly?: boolean
-      placeholder?: string
-      stickyTop?: number
-    }>
+    Plugins: EditorPluginsComponent
   } | null>(null)
 
   useEffect(() => {
     Promise.all([
       import("./nodes").then((m) => m.nodes),
       import("./plugins").then((m) => ({ Plugins: m.Plugins })),
-    ]).then(([nodes, { Plugins }]) => setConfig({ nodes, Plugins }))
+    ]).then(([nodes, { Plugins }]) =>
+      setConfig({ nodes, Plugins: Plugins as EditorPluginsComponent }),
+    )
   }, [])
 
   const editorConfig = useMemo(() => {
@@ -93,7 +99,7 @@ export function Editor({
     )
   }
 
-  const { Plugins } = config
+  const EditorPlugins = config.Plugins
 
   return (
     <div
@@ -116,7 +122,7 @@ export function Editor({
           }}
         >
           <TooltipProvider>
-            <Plugins
+            <EditorPlugins
               readOnly={readOnly}
               placeholder={placeholder}
               stickyTop={stickyTop}

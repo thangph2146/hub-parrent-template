@@ -172,6 +172,7 @@ export {
   type HanetTestConnectionDto,
   type HanetWebhookUrlsDto,
   type HanetStoredAvatarRow,
+  type HanetWebhookIngestEntry,
   type HanetSyncAvatarsResult,
   type EventHanetReconcileResult,
   type HanetPersonListPage,

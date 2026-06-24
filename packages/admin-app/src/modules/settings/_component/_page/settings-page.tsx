@@ -173,14 +173,14 @@ export default function SettingsPage() {
       const seen = new Set<string>()
       return {
         items: result.items
-          .filter((r) => !isSuperAdminRoleCode(String(r.name ?? "")))
-          .filter((r) => {
+          .filter((r: Record<string, unknown>) => !isSuperAdminRoleCode(String(r.name ?? "")))
+          .filter((r: Record<string, unknown>) => {
             const code = String(r.code ?? r.name ?? "").replace(/^"|"$/g, "")
             if (seen.has(code)) return false
             seen.add(code)
             return true
           })
-          .map((r) => ({
+          .map((r: Record<string, unknown>) => ({
             id: String(r.id ?? ""),
             code: String(r.code ?? r.name ?? "").replace(/^"|"$/g, ""),
             name: String(r.displayName ?? r.name ?? "").replace(/^"|"$/g, ""),
@@ -263,7 +263,9 @@ export default function SettingsPage() {
     publicSiteSeoQuery.isPending
 
   const defaultRoleLabel = useMemo(() => {
-    const match = rolesQuery.data?.items.find((r) => r.code === defaultRole)
+    const match = rolesQuery.data?.items.find(
+      (r: { code: string; name: string }) => r.code === defaultRole,
+    )
     return match?.name ?? null
   }, [rolesQuery.data?.items, defaultRole])
 
@@ -567,7 +569,7 @@ export default function SettingsPage() {
                               setDefaultRole(typeof v === "string" ? v : "")
                             }
                             options={(rolesQuery.data?.items ?? []).map(
-                              (r): SelectPickerOption => ({
+                              (r: { code: string; name: string }): SelectPickerOption => ({
                                 value: r.code,
                                 label: r.name,
                               })

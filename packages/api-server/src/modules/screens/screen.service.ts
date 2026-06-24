@@ -3,52 +3,63 @@
  *
  * Bám sát pattern của `apps/main/api/src/screens/screens.service.ts`.
  * Extend `BaseCrudService` từ `@workspace/api-server/bases`.
- *
- * Concrete DTOs được generate từ `screen.entity.ts`.
  */
 import { Injectable, Logger } from '@nestjs/common';
 import { BaseCrudService } from '../../bases';
+import { toEntityId, toIso } from '../../common';
 import type { CrudRowDto, CrudCreateData, CrudUpdateData } from '../../types';
 
 /**
  * Screen row DTO trả về cho client.
- * Các field khớp với entity `Screen`.
  */
 export interface ScreensRowDto extends CrudRowDto {
   name?: string;
   code?: unknown;
   cameraId?: number | null;
   cameraName?: string | null;
-  templateId?: number | null;
-  templateName?: string | null;
   status: number;
 }
 
-/**
- * Screen create DTO - tất cả optional ngoại trừ các field required.
- */
 export interface ScreensCreateData extends CrudCreateData {
   name?: string;
   code?: unknown;
+  cameraId?: number | string | null;
   status?: number;
 }
 
-/**
- * Screen update DTO - tất cả optional (Partial pattern).
- */
 export interface ScreensUpdateData extends CrudUpdateData {
   name?: string;
   code?: unknown;
+  cameraId?: number | string | null;
   status?: number;
 }
 
-/**
- * Abstract Screens Service.
- *
- * Subclass override `getEntity()` để integrate với concrete entity class.
- * Tất cả CRUD operations (list, getById, create, update, softDelete,
- * restore, hardDelete, bulk) đã có sẵn từ `BaseCrudService`.
- */
+type ScreenRow = {
+  id: number;
+  name: string;
+  code?: string | null;
+  camera?: { id?: number; name?: string } | null;
+  status: number;
+  createdAt?: Date | string | null;
+  updatedAt?: Date | string | null;
+  deletedAt?: Date | string | null;
+};
+
+function mapScreenRow(r: ScreenRow): ScreensRowDto {
+  return {
+    id: r.id,
+    name: r.name,
+    code: r.code ?? null,
+    cameraId: r.camera?.id ?? null,
+    cameraName: r.camera?.name ?? null,
+    status: r.status,
+    isActive: r.status !== 0,
+    createdAt: toIso(r.createdAt) ?? '',
+    updatedAt: toIso(r.updatedAt) ?? '',
+    deletedAt: toIso(r.deletedAt),
+  };
+}
+
 @Injectable()
 export abstract class BaseScreensService extends BaseCrudService<
   ScreensRowDto,
@@ -57,25 +68,22 @@ export abstract class BaseScreensService extends BaseCrudService<
 > {
   protected readonly logger = new Logger(BaseScreensService.name);
 
-  /** Trả về class constructor của entity (vd: `Screen`). */
   protected abstract getEntity(): new () => Record<string, unknown>;
 
-  /** Tên entity dùng cho logging. */
+  protected abstract getCameraEntity(): new () => Record<string, unknown>;
+
   protected getEntityName(): string {
     return 'Screen';
   }
 
-  /** Tên trường primary key. */
   protected getPrimaryKeyField(): string {
     return 'id';
   }
 
-  /** Soft delete field - null nếu entity không hỗ trợ. */
   protected getSoftDeleteField(): string | null {
     return 'deletedAt';
   }
 
-  /** Fields cho phép search LIKE. Override trong subclass nếu cần. */
   protected getSearchFields(): string[] {
     return ['name', 'code'];
   }
@@ -86,5 +94,45 @@ export abstract class BaseScreensService extends BaseCrudService<
 
   protected getBulkLabel(): string {
     return 'màn hình';
+  }
+
+  protected getListPopulate(): string[] {
+    return ['camera'];
+  }
+
+  protected mapRow(entity: Record<string, unknown>): ScreensRowDto {
+    return mapScreenRow(entity as ScreenRow);
+  }
+
+  protected async beforeCreate(
+    data: ScreensCreateData,
+  ): Promise<Record<string, unknown>> {
+    return this.prepareScreenData(data as Record<string, unknown>);
+  }
+
+  protected async beforeUpdate(
+    _id: string | number,
+    data: ScreensUpdateData,
+  ): Promise<Record<string, unknown>> {
+    return this.prepareScreenData(data as Record<string, unknown>);
+  }
+
+  private prepareScreenData(data: Record<string, unknown>): Record<string, unknown> {
+    const out: Record<string, unknown> = {};
+    if (data.name !== undefined) out.name = data.name;
+    if (data.code !== undefined) out.code = data.code;
+    if (data.status !== undefined) out.status = data.status;
+
+    if (data.cameraId !== undefined) {
+      const raw = data.cameraId;
+      const id =
+        raw == null || raw === ''
+          ? null
+          : toEntityId(raw as string | number);
+      const Camera = this.getCameraEntity();
+      out.camera = id ? this.getEm().getReference(Camera, id) : null;
+    }
+
+    return out;
   }
 }

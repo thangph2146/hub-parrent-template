@@ -77,8 +77,10 @@ function EditPostPageInner() {
         content: normalizeContentForEditor(post.content),
         published: post.published,
         publishedAt: toLocalInputValue(post.publishedAt ?? ""),
-        categoryIds: post.categories.map((item) => String(item.id)),
-        tagIds: post.tags.map((item) => String(item.id)),
+        categoryIds: post.categories.map((item: { id: number | string }) =>
+          String(item.id),
+        ),
+        tagIds: post.tags.map((item: { id: number | string }) => String(item.id)),
       }),
     )
   })

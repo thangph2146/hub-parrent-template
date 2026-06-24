@@ -1,16 +1,16 @@
 "use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
+import type { StoreSyncSdk } from "@workspace/api-client"
 import type { ScreenConfirmAction, ScreenFormValues } from "../shared/types"
 import { screenFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 const EMPTY: ScreenFormValues = {
   name: "",
   code: "",
+  hanetDeviceId: "",
   cameraId: "",
   cameraName: "",
-  templateId: "",
-  templateName: "",
   status: 1,
 }
 export function buildScreenPayload(v: ScreenFormValues) {
@@ -18,10 +18,27 @@ export function buildScreenPayload(v: ScreenFormValues) {
     name: v.name.trim(),
     code: v.code?.trim() || null,
     cameraId: v.cameraId?.trim() || null,
-    cameraName: v.cameraName?.trim() || null,
-    templateId: v.templateId?.trim() || null,
-    templateName: v.templateName?.trim() || null,
     status: v.status,
+  }
+}
+
+/** Đồng bộ camera Hub từ device HANET đã chọn trước khi lưu màn hình. */
+export async function buildScreenSubmitPayload(
+  api: StoreSyncSdk,
+  v: ScreenFormValues
+) {
+  const base = buildScreenPayload(v)
+  const deviceId = v.hanetDeviceId?.trim()
+  if (!deviceId) return base
+
+  const camera = await api.hanet.ensureCamera({
+    deviceId,
+    name: v.cameraName?.trim() || undefined,
+  })
+
+  return {
+    ...base,
+    cameraId: String(camera.id),
   }
 }
 export function useScreenForm() {

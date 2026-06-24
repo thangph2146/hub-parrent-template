@@ -81,7 +81,7 @@ function useComposedRefs<T>(...refs: PossibleRef<T>[]): React.RefCallback<T> {
     (value: T) => {
       composeRefs(...refs)(value)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo -- radix composeRefs pattern
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- radix composeRefs pattern
     refs,
   )
 }

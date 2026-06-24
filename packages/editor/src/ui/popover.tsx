@@ -72,16 +72,24 @@ export function PopoverTrigger({
     }
   }
 
+  const handleRef = React.useCallback(
+    (node: HTMLElement | null) => {
+      triggerRef.current = node as HTMLButtonElement | null
+    },
+    [triggerRef],
+  )
+
   if (asChild && React.isValidElement(children)) {
     return React.cloneElement(
       children as React.ReactElement<
         React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> }
       >,
+      // eslint-disable-next-line react-hooks/refs -- callback ref attaches trigger for positioning
       {
-        ref: triggerRef,
+        ref: handleRef,
         onClick: handleClick,
         ...props,
-      }
+      },
     )
   }
 

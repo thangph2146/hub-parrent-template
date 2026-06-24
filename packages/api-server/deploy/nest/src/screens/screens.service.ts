@@ -3,6 +3,7 @@ import { SCREEN_COLUMN_FILTERS } from '../common/admin/filter-configs';
 import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import { Screen } from '../entities/screen.entity';
+import { Camera } from '../entities/camera.entity';
 import { BaseScreensService } from '../common/module-bases/screens/screen.service';
 export type {
   ScreensRowDto,
@@ -22,6 +23,10 @@ export class ScreensService extends BaseScreensService {
 
   protected getEntity() {
     return Screen as unknown as new () => Record<string, unknown>;
+  }
+
+  protected getCameraEntity() {
+    return Camera as unknown as new () => Record<string, unknown>;
   }
 
   protected getSearchFields(): string[] {

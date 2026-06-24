@@ -21,7 +21,7 @@ export type ToastVariant =
   | "loading"
   | "default"
 
-/** Tuỳ chọn toast — `copyReport` chỉ dùng cho nút Sao chép, không hiển thị UI. */
+/** Tuỳ chọn toast — `copyReport` / `copyReportBuilder` chỉ dùng cho nút Sao chép, không hiển thị trong UI. */
 export type ToastOptions = ExternalToast & {
   copyReport?: string
   /** Sinh báo cáo khi bấm Sao chép — ưu tiên hơn `copyReport` tĩnh. */

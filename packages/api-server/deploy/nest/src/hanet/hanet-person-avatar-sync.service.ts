@@ -17,6 +17,8 @@ export type HanetSyncAvatarsResult = {
   created: number;
   updated: number;
   skipped: number;
+  /** Person không ghi được DB (URL quá dài, unique, …) — sync vẫn trả 200. */
+  failed: number;
   linkedRegistrations: number;
   linkedUsers: number;
   /** Tổng trên HANET (getTotalPersonByPlaceID). */
@@ -223,6 +225,7 @@ export class HanetPersonAvatarSyncService {
     let created = 0;
     let updated = 0;
     let skipped = 0;
+    let failed = 0;
     let linkedRegistrations = 0;
     let linkedUsers = 0;
     let lastPageFirstId: string | null = null;
@@ -252,29 +255,37 @@ export class HanetPersonAvatarSyncService {
         seenPersonIds.add(person.personId);
 
         fetched += 1;
-        const outcome = await this.upsertPersonAvatar(person);
-        if (outcome === 'created') created += 1;
-        else if (outcome === 'updated') updated += 1;
-        else skipped += 1;
+        try {
+          const outcome = await this.upsertPersonAvatar(person);
+          if (outcome === 'created') created += 1;
+          else if (outcome === 'updated') updated += 1;
+          else skipped += 1;
 
-        if (person.aliasId.includes('@')) {
-          linkedRegistrations += await linkHanetPersonToRegistrationsByEmail(
-            this.em,
-            person.personId,
-            person.aliasId,
-          );
-          const face = await this.em.findOne(FaceData, {
-            hanetPersonId: person.personId,
-            deletedAt: null,
-          } as FilterQuery<FaceData>);
-          if (face) {
-            const userId = await linkFaceDataToUserByEmail(
+          if (person.aliasId.includes('@')) {
+            linkedRegistrations += await linkHanetPersonToRegistrationsByEmail(
               this.em,
-              face,
+              person.personId,
               person.aliasId,
             );
-            if (userId) linkedUsers += 1;
+            const face = await this.em.findOne(FaceData, {
+              hanetPersonId: person.personId,
+              deletedAt: null,
+            } as FilterQuery<FaceData>);
+            if (face) {
+              const userId = await linkFaceDataToUserByEmail(
+                this.em,
+                face,
+                person.aliasId,
+              );
+              if (userId) linkedUsers += 1;
+            }
           }
+        } catch (err) {
+          failed += 1;
+          const message = err instanceof Error ? err.message : String(err);
+          this.logger.warn(
+            `HANET avatar sync skip person=${person.personId}: ${message}`,
+          );
         }
       }
 
@@ -302,7 +313,7 @@ export class HanetPersonAvatarSyncService {
     }
 
     this.logger.log(
-      `HANET avatar sync place=${resolvedPlaceId || '-'} fetched=${fetched} created=${created} updated=${updated}`,
+      `HANET avatar sync place=${resolvedPlaceId || '-'} fetched=${fetched} created=${created} updated=${updated} failed=${failed}`,
     );
 
     return {
@@ -312,6 +323,7 @@ export class HanetPersonAvatarSyncService {
       created,
       updated,
       skipped,
+      failed,
       linkedRegistrations,
       linkedUsers,
       hanetTotal: hanetTotal > 0 ? hanetTotal : undefined,
@@ -323,20 +335,22 @@ export class HanetPersonAvatarSyncService {
   private async upsertPersonAvatar(
     person: HanetPersonRow,
   ): Promise<'created' | 'updated' | 'skipped'> {
-    const imagePath = person.avatar.trim() || `hanet:person:${person.personId}`;
+    const personId = person.personId.trim();
+    if (!personId) return 'skipped';
 
-    let face = await this.em.findOne(FaceData, {
-      hanetPersonId: person.personId,
-      deletedAt: null,
-    } as FilterQuery<FaceData>);
+    const avatarUrl = person.avatar.trim();
+    const imagePath = avatarUrl || `hanet:person:${personId}`;
+    const displayName = this.clipVarchar(person.displayName, 255) || null;
+    const aliasId = this.clipVarchar(person.aliasId, 255) || null;
 
+    let face = await this.findFaceByHanetPersonId(personId);
     const now = new Date();
 
     if (!face) {
       face = this.em.create(FaceData, {
-        hanetPersonId: person.personId,
-        hanetAliasId: person.aliasId || null,
-        displayName: person.displayName || null,
+        hanetPersonId: personId,
+        hanetAliasId: aliasId,
+        displayName,
         imagePath,
         status: 1,
         createdAt: now,
@@ -347,16 +361,20 @@ export class HanetPersonAvatarSyncService {
     }
 
     let changed = false;
-    if (person.displayName && face.displayName !== person.displayName) {
-      face.displayName = person.displayName;
+    if (face.deletedAt) {
+      face.deletedAt = null;
       changed = true;
     }
-    if (person.aliasId && face.hanetAliasId !== person.aliasId) {
-      face.hanetAliasId = person.aliasId;
+    if (displayName && face.displayName !== displayName) {
+      face.displayName = displayName;
       changed = true;
     }
-    if (person.avatar && face.imagePath !== person.avatar) {
-      face.imagePath = person.avatar;
+    if (aliasId && face.hanetAliasId !== aliasId) {
+      face.hanetAliasId = aliasId;
+      changed = true;
+    }
+    if (avatarUrl && face.imagePath !== avatarUrl) {
+      face.imagePath = avatarUrl;
       changed = true;
     }
 
@@ -365,6 +383,26 @@ export class HanetPersonAvatarSyncService {
     face.updatedAt = now;
     await this.em.flush();
     return 'updated';
+  }
+
+  /** Ưu tiên bản ghi active; nếu chỉ còn soft-delete thì khôi phục thay vì insert trùng unique. */
+  private async findFaceByHanetPersonId(
+    personId: string,
+  ): Promise<FaceData | null> {
+    const active = await this.em.findOne(FaceData, {
+      hanetPersonId: personId,
+      deletedAt: null,
+    } as FilterQuery<FaceData>);
+    if (active) return active;
+
+    return this.em.findOne(FaceData, {
+      hanetPersonId: personId,
+    } as FilterQuery<FaceData>);
+  }
+
+  private clipVarchar(value: string, max: number): string {
+    const trimmed = value.trim();
+    return trimmed.length <= max ? trimmed : trimmed.slice(0, max);
   }
 
   private async resolvePlaceId(placeId?: string): Promise<string> {

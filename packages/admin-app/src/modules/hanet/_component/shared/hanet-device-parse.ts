@@ -63,3 +63,12 @@ export function parseHanetDevicesResponse(data: unknown): HanetDeviceOption[] {
     .map((row) => parseDeviceRecord(row))
     .filter((row): row is HanetDeviceOption => row != null)
 }
+
+export function buildHanetDeviceSelectOptions(
+  devices: HanetDeviceOption[] | undefined
+) {
+  return (devices ?? []).map((device) => ({
+    value: device.deviceId,
+    label: `${device.name} (${device.deviceId})`,
+  }))
+}

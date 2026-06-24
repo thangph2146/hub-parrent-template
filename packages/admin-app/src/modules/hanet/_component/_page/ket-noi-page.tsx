@@ -5,10 +5,12 @@ import {
   CheckCircle2,
   Globe,
   KeyRound,
+  Link2,
   Loader2,
   MapPin,
   PlugZap,
   UserCircle2,
+  Webhook,
   XCircle,
 } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
@@ -198,6 +200,31 @@ function KetNoiContent() {
                     <code className="font-mono text-xs break-all">
                       {hanetStatus.defaultPlaceId}
                     </code>
+                  </FieldSectionField>
+                ) : null}
+                {hanetStatus.urls?.auto ? (
+                  <FieldSectionField
+                    label="Webhook URL (đăng ký trên developers.hanet.ai)"
+                    icon={Webhook}
+                    copyable
+                    copyText={hanetStatus.urls.auto}
+                  >
+                    <code className="font-mono text-xs break-all">
+                      {hanetStatus.urls.auto}
+                    </code>
+                    <p className="mt-1.5 text-[11px] leading-relaxed text-muted-foreground">
+                      HANET cloud POST check-in tới URL này. Kiểm tra{" "}
+                      <a
+                        href={`${hanetStatus.urls.auto}/info`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0.5 text-primary hover:underline"
+                      >
+                        /info
+                        <Link2 className="size-3" aria-hidden />
+                      </a>{" "}
+                      phải trả HTTP 200.
+                    </p>
                   </FieldSectionField>
                 ) : null}
               </div>

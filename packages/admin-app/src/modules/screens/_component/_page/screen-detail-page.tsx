@@ -7,7 +7,6 @@ import {
   Clock,
   Monitor,
   Camera,
-  Layout,
   Fingerprint,
 } from "lucide-react"
 import { Badge } from "@ui/components/badge"
@@ -104,31 +103,22 @@ function DetailInner() {
               )}
 
               <FieldSectionDivider />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField label="Camera" icon={Camera}>
-                  {e.cameraName || "—"}
-                </FieldSectionField>
-                <FieldSectionField label="Template" icon={Layout}>
-                  {e.templateName || "—"}
-                </FieldSectionField>
-              </div>
+              <FieldSectionField label="Camera" icon={Camera}>
+                {e.cameraName || "—"}
+              </FieldSectionField>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FieldSectionField
-                  label="Camera ID"
-                  icon={Camera}
-                  valueClassName="font-mono text-sm"
-                >
-                  {e.cameraId || "—"}
-                </FieldSectionField>
-                <FieldSectionField
-                  label="Template ID"
-                  icon={Layout}
-                  valueClassName="font-mono text-sm"
-                >
-                  {e.templateId || "—"}
-                </FieldSectionField>
-              </div>
+              {e.cameraId ? (
+                <>
+                  <FieldSectionDivider />
+                  <FieldSectionField
+                    label="Camera ID"
+                    icon={Camera}
+                    valueClassName="font-mono text-sm"
+                  >
+                    {e.cameraId}
+                  </FieldSectionField>
+                </>
+              ) : null}
             </FieldSetContent>
           </FieldSet>
         </AdminDetailMain>

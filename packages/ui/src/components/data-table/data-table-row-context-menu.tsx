@@ -5,6 +5,7 @@ import {
   type ComponentProps,
   type CSSProperties,
   type Ref,
+  type MutableRefObject,
   type ReactNode,
 } from "react"
 import { flushSync } from "react-dom"
@@ -207,12 +208,14 @@ export function DataTableRowContextMenu({
                 if (typeof triggerRef === "function") {
                   triggerRef(node)
                 } else if (triggerRef) {
-                  triggerRef.current = node
+                  ;(triggerRef as MutableRefObject<HTMLTableRowElement | null>).current =
+                    node
                 }
                 if (typeof rowRef === "function") {
                   rowRef(node)
                 } else if (rowRef) {
-                  rowRef.current = node
+                  ;(rowRef as MutableRefObject<HTMLTableRowElement | null>).current =
+                    node
                 }
               }}
             />

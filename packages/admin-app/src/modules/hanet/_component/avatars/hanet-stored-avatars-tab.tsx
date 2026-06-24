@@ -10,6 +10,7 @@ import {
   useHanetAvatarsQuery,
 } from "@workspace/admin-app/modules/hanet/_component"
 import { useHanetStatusQuery } from "../queries"
+import type { HanetStoredAvatarRow } from "@workspace/api-client"
 
 const PAGE_SIZE = 24
 
@@ -26,7 +27,7 @@ export function HanetStoredAvatarsTab() {
     enabled: hanetStatus?.configured === true,
   })
 
-  const items = query.data?.items ?? []
+  const items: HanetStoredAvatarRow[] = query.data?.items ?? []
   const total = query.data?.total ?? 0
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 

@@ -45,6 +45,7 @@ import { slugify } from "@workspace/api-client"
 import { readHanetAdminPlaceId } from "@workspace/admin-app/modules/hanet/_component"
 import {
   HanetPlaceSelect,
+  buildHanetDeviceSelectOptions,
   useHanetDevicesQuery,
 } from "@workspace/admin-app/modules/hanet/_component"
 import { useHanetStatusQuery } from "@workspace/admin-app/modules/hanet/_component"
@@ -271,15 +272,6 @@ function LocationSelector({ form }: { form: EventFormShellProps["form"] }) {
       </p>
     </div>
   )
-}
-
-function buildHanetDeviceSelectOptions(
-  devices: { deviceId: string; name: string }[] | undefined
-) {
-  return (devices ?? []).map((device) => ({
-    value: device.deviceId,
-    label: `${device.name} (${device.deviceId})`,
-  }))
 }
 
 export function EventFormShell({

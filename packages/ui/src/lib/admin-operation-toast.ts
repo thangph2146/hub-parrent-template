@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-query"
 import { toast } from "./toast"
 import type { ToastOptions } from "./toast-types"
-import { TOAST_COPY_HINT_DONE, TOAST_COPY_HINT_ERROR, TOAST_COPY_HINT_LOADING } from "./toast-types"
 import { suppressRealtimeToastAfterMutation } from "./admin-toast-suppress"
 import { resolveAdminOperationError } from "./admin-operation-error"
 import {
@@ -241,7 +240,6 @@ export function buildManualOperationToastOptions(input: {
       storageOperation: input.storageOperation,
       startedAt: input.startedAt,
     }),
-    description: input.extra?.description ?? TOAST_COPY_HINT_LOADING,
     ...input.extra,
   }
 }
@@ -301,7 +299,6 @@ export function createAdminMutationCache(): MutationCache {
       const id = toast.loading(adminToast.loading, {
         copyStartedAt: startedAt,
         copyVariant: "loading",
-        description: TOAST_COPY_HINT_LOADING,
         duration: Number.POSITIVE_INFINITY,
         copyReportBuilder: buildOperationCopyReportBuilder(mutation, {
           variables,
@@ -342,7 +339,6 @@ export function createAdminMutationCache(): MutationCache {
       )
       toast.success(payload.message, {
         ...toastOptions,
-        description: toastOptions.description ?? TOAST_COPY_HINT_DONE,
         duration: toastOptions.duration ?? 6000,
       })
       toastIds.delete(mutation)
@@ -383,7 +379,6 @@ export function createAdminMutationCache(): MutationCache {
       )
       toast.error(payload.message, {
         ...toastOptions,
-        description: toastOptions.description ?? TOAST_COPY_HINT_ERROR,
         duration: toastOptions.duration ?? 8000,
       })
       toastIds.delete(mutation)

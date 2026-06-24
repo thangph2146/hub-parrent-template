@@ -1,5 +1,6 @@
 export {
   buildScreenPayload,
+  buildScreenSubmitPayload,
   useScreenForm,
   useHandleConfirmAction,
   useConfirmAction,

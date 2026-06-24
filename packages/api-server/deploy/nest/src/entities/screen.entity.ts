@@ -1,7 +1,6 @@
 import { Entity, ManyToOne, Property } from '@mikro-orm/core';
 import { BaseEntity } from './base.entity';
 import { Camera } from './camera.entity';
-import { Template } from './template.entity';
 
 @Entity({ tableName: 'screens' })
 export class Screen extends BaseEntity {
@@ -16,12 +15,6 @@ export class Screen extends BaseEntity {
     fieldName: 'cameraId',
   })
   camera?: Camera | null;
-
-  @ManyToOne(() => Template, {
-    nullable: true,
-    fieldName: 'templateId',
-  })
-  template?: Template | null;
 
   @Property({ default: 1 })
   status: number = 1;

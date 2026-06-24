@@ -714,8 +714,7 @@
     "Screen": {
       "fileName": "screen.entity.ts",
       "relations": [
-        "Camera",
-        "Template"
+        "Camera"
       ],
       "relationDetails": [
         {
@@ -723,13 +722,6 @@
           "target": "Camera",
           "propertyName": "camera",
           "fieldName": "cameraId",
-          "primary": false
-        },
-        {
-          "kind": "ManyToOne",
-          "target": "Template",
-          "propertyName": "template",
-          "fieldName": "templateId",
           "primary": false
         }
       ],
@@ -1192,10 +1184,6 @@
     [
       "Screen",
       "Camera"
-    ],
-    [
-      "Screen",
-      "Template"
     ],
     [
       "Session",
@@ -1697,14 +1685,6 @@
       "kind": "ManyToOne",
       "propertyName": "camera",
       "fieldName": "cameraId",
-      "primary": false
-    },
-    {
-      "from": "Screen",
-      "to": "Template",
-      "kind": "ManyToOne",
-      "propertyName": "template",
-      "fieldName": "templateId",
       "primary": false
     },
     {

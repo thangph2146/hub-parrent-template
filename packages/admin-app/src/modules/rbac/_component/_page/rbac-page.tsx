@@ -97,21 +97,23 @@ export default function RbacPage() {
     }
     return result.sort((a, b) => a.code.localeCompare(b.code))
   }, [])
-  const permissions = useMemo(() => {
+  const permissions = useMemo((): RbacPermission[] => {
     const catalogPermissions = permissionCatalog.data?.permissions ?? []
     if (catalogPermissions.length > 0) {
       return catalogPermissions
-        .map((permission) => ({
+        .map((permission: RbacPermission) => ({
           ...permission,
           name: permission.name || permissionLabelVi(permission.code),
         }))
-        .sort((a, b) => a.code.localeCompare(b.code))
+        .sort((a: RbacPermission, b: RbacPermission) =>
+          a.code.localeCompare(b.code),
+        )
     }
     return fallbackPermissions
   }, [fallbackPermissions, permissionCatalog.data?.permissions])
   const availablePermissionCodes = useMemo(
-    () => new Set(permissions.map((permission) => permission.code)),
-    [permissions]
+    () => new Set(permissions.map((permission: RbacPermission) => permission.code)),
+    [permissions],
   )
   const availableRolePresets = useMemo(
     () => resolveAvailableRolePresets(availablePermissionCodes),

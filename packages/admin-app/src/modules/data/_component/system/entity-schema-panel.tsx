@@ -25,6 +25,7 @@ import { useDatabaseSchema } from "./_hooks/use-database-schema"
 import { buildDatabaseSchemaErrorCopyText } from "./schema-error-report"
 import { SystemOperationsPanel } from "./operations-panel"
 import { copyTextToClipboard } from "./operation-result"
+import type { SchemaTable } from "../shared/types"
 import {
   buildEntityRelationRows,
   buildEntitySchemaRows,
@@ -193,7 +194,7 @@ export function EntitySchemaPanel({
                 {formatEntityRowCount(
                   schema.totalActiveRows ??
                     schema.tables.reduce(
-                      (sum: number, t) =>
+                      (sum: number, t: SchemaTable) =>
                         sum + Math.max(0, t.activeRowCount ?? t.rowCount ?? 0),
                       0
                     )

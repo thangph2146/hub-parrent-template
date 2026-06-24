@@ -20,6 +20,8 @@ export type HanetCheckinLiveBarProps = {
   webhookLocalhost?: boolean
   webhookUrl?: string | null
   lastWebhookAt?: string | null
+  webhookVerify?: boolean
+  clientId?: string | null
 }
 
 function buildHanetLiveIssueReport(options: {
@@ -29,6 +31,8 @@ function buildHanetLiveIssueReport(options: {
   socketConnected?: boolean
   socketError?: boolean
   pollIntervalMs?: number | null
+  webhookVerify?: boolean
+  clientId?: string | null
 }): string {
   const lines = [
     "[HANET check-in] Báo cáo vấn đề realtime",
@@ -36,6 +40,8 @@ function buildHanetLiveIssueReport(options: {
     "Trạng thái:",
     `- Webhook URL Hub: ${options.webhookUrl?.trim() || "—"}`,
     `- Webhook localhost: ${options.webhookLocalhost ? "Có (HANET cloud không gọi được)" : "Không"}`,
+    `- Xác thực hash webhook: ${options.webhookVerify ? "Bật" : "Tắt"}`,
+    `- Client ID (developers.hanet.ai): ${options.clientId?.trim() || "—"}`,
     `- Socket admin: ${options.socketError ? "Lỗi" : options.socketConnected ? "OK" : "Chưa kết nối"}`,
     `- Poll dự phòng: ${options.pollIntervalMs ? `${Math.round(options.pollIntervalMs / 1000)}s` : "—"}`,
     `- Webhook gần nhất tới Hub: ${options.lastWebhookAt?.trim() || "Chưa có"}`,
@@ -66,10 +72,13 @@ function buildHanetLiveIssueReport(options: {
       "Chưa thấy webhook nào tới Hub sau khi quét.",
       "",
       "Kiểm tra:",
-      "1. URL webhook trên developers.hanet.ai khớp URL Hub ở trên",
-      "2. API đang chạy và reachable từ internet",
-      "3. GET /api/admin/hanet/webhook/recent sau khi quét",
-      "4. Log API có dòng: HANET webhook ← device=...",
+      "1. Trên https://developers.hanet.ai — app đúng Client ID ở trên, Webhook URL khớp chính xác (HTTPS, không thừa dấu /)",
+      "2. GET công khai (phải HTTP 200):",
+      `   ${options.webhookUrl?.trim() || "—"}/info`,
+      "3. API production reachable — HANET cloud POST từ internet tới URL webhook",
+      "4. Sau khi quét: GET /api/admin/hanet/webhook/recent — log API có dòng HANET webhook ← device=...",
+      "5. Nếu deploy nhiều instance API: buffer webhook in-memory theo từng pod — thử poll /webhook/recent hoặc xem log từng instance",
+      "6. Poll dự phòng vẫn lấy check-in qua partner API (~3s) nếu webhook chưa tới",
     )
   } else {
     lines.push(
@@ -93,6 +102,8 @@ export function HanetCheckinLiveBar({
   webhookLocalhost,
   webhookUrl,
   lastWebhookAt,
+  webhookVerify,
+  clientId,
 }: HanetCheckinLiveBarProps) {
   const [copied, setCopied] = useState(false)
 
@@ -116,6 +127,8 @@ export function HanetCheckinLiveBar({
         socketConnected,
         socketError,
         pollIntervalMs,
+        webhookVerify,
+        clientId,
       }),
     [
       webhookLocalhost,
@@ -124,6 +137,8 @@ export function HanetCheckinLiveBar({
       socketConnected,
       socketError,
       pollIntervalMs,
+      webhookVerify,
+      clientId,
     ],
   )
 
@@ -237,11 +252,20 @@ export function HanetCheckinLiveBar({
               </>
             ) : (
               <>
-                Chưa thấy webhook nào tới Hub — quét thử face rồi kiểm tra{" "}
+                Chưa thấy webhook tới Hub — đăng ký URL trên{" "}
+                <a
+                  href="https://developers.hanet.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline-offset-2 hover:underline"
+                >
+                  developers.hanet.ai
+                </a>{" "}
+                (Client ID khớp .env), rồi quét và kiểm tra{" "}
                 <code className="rounded bg-muted px-1">
                   GET /admin/hanet/webhook/recent
                 </code>
-                .
+                . Poll dự phòng vẫn cập nhật bảng ~3s.
               </>
             )}
           </p>

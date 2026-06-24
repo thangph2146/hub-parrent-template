@@ -64,14 +64,6 @@ export function getScreenColumns({
       ),
     },
     {
-      accessorKey: "templateName",
-      header: "Template",
-      enableColumnFilter: true,
-      cell: ({ getValue }) => (
-        <span className="text-sm">{String(getValue() ?? "—")}</span>
-      ),
-    },
-    {
       accessorKey: "status",
       header: "Trạng thái",
       enableColumnFilter: true,

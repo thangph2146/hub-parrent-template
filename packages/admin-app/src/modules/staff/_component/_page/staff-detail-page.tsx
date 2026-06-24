@@ -334,7 +334,7 @@ function StaffDetailPageInner() {
 
               <FieldSectionField label="Vai trò" icon={ShieldHalf}>
                 <div className="flex flex-wrap gap-1.5">
-                  {user.roles.map((r) => (
+                  {user.roles.map((r: { code: string; name: string }) => (
                     <Badge
                       key={r.code}
                       variant={

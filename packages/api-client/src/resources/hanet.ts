@@ -34,6 +34,21 @@ export type HanetAdminStatusDto = {
   };
 };
 
+export type HanetWebhookIngestEntry = {
+  id: string;
+  receivedAt: string;
+  eventId: string | null;
+  deviceId: string;
+  personName: string;
+  personType: string;
+  placeId: string;
+  dataType: string;
+  actionType: string;
+  keys: string[];
+  processed: boolean;
+  error: string | null;
+};
+
 export type HanetTestConnectionDto = {
   ok: boolean;
   tokenPreview: string;
@@ -80,6 +95,7 @@ export type HanetSyncAvatarsResult = {
   created: number;
   updated: number;
   skipped: number;
+  failed: number;
   linkedRegistrations: number;
   linkedUsers: number;
   hanetTotal?: number;
@@ -155,6 +171,14 @@ export class HanetAdminApi {
     return getData<HanetAdminStatusDto>(
       this.http,
       `/admin/hanet/status${query}`,
+    );
+  }
+
+  webhookRecent(limit = 20): Promise<HanetWebhookIngestEntry[]> {
+    const query = limit > 0 ? `?limit=${encodeURIComponent(String(limit))}` : "";
+    return getData<HanetWebhookIngestEntry[]>(
+      this.http,
+      `/admin/hanet/webhook/recent${query}`,
     );
   }
 

@@ -20,6 +20,8 @@ import {
   hanetDevicesQueryKey,
   useHanetDevicesQuery,
 } from "../queries/use-hanet-devices-query"
+import type { HanetDeviceOption } from "../shared/hanet-device-parse"
+import type { HanetPlaceOption } from "../shared/hanet-place-parse"
 
 export function HanetDevicesTab() {
   const queryClient = useQueryClient()
@@ -34,8 +36,8 @@ export function HanetDevicesTab() {
     hanetStatus?.configured === true
   )
 
-  const places = placesQuery.data ?? []
-  const devices = devicesQuery.data ?? []
+  const places: HanetPlaceOption[] = placesQuery.data ?? []
+  const devices: HanetDeviceOption[] = devicesQuery.data ?? []
 
   return (
     <div className="space-y-4">

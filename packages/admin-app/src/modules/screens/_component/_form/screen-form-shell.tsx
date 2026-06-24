@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+import Link from "next/link"
 import {
   FieldError,
   FieldSet,
@@ -11,7 +13,6 @@ import { FormFieldCol } from "@ui/components/typing"
 import {
   SelectPicker,
   TreePicker,
-  type SelectPickerOption,
 } from "@ui/components/pickers"
 import {
   AdminFormLayout,
@@ -22,6 +23,14 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Hash, Monitor } from "lucide-react"
+import {
+  HanetPlaceSelect,
+  buildHanetDeviceSelectOptions,
+  readHanetAdminPlaceId,
+  useHanetDevicesQuery,
+  useHanetStatusQuery,
+} from "@workspace/admin-app/modules/hanet/_component"
+import { useAdminModulePath } from "@workspace/admin-app/runtime"
 import type { ScreenFormValues } from "../shared/types"
 
 export interface ScreenFormShellProps {
@@ -29,8 +38,6 @@ export interface ScreenFormShellProps {
   onSubmit: (v: ScreenFormValues) => Promise<void>
   submitting: boolean
   editingId: string | null
-  cameraOptions: SelectPickerOption[]
-  templateOptions: SelectPickerOption[]
   onBack: () => void
   onReset: () => void
 }
@@ -40,12 +47,20 @@ export function ScreenFormShell({
   onSubmit,
   submitting,
   editingId,
-  cameraOptions,
-  templateOptions,
   onBack,
   onReset,
 }: ScreenFormShellProps) {
+  const hanetPath = useAdminModulePath("hanet")
   const { control } = form
+  const { data: hanetStatus } = useHanetStatusQuery()
+  const [hanetPlaceId, setHanetPlaceId] = useState(readHanetAdminPlaceId)
+  const effectivePlaceId =
+    hanetPlaceId || hanetStatus?.defaultPlaceId || ""
+  const { data: hanetDevices, isLoading: devicesLoading } = useHanetDevicesQuery(
+    effectivePlaceId,
+    hanetStatus?.configured === true
+  )
+  const deviceOptions = buildHanetDeviceSelectOptions(hanetDevices)
 
   return (
     <>
@@ -94,42 +109,63 @@ export function ScreenFormShell({
                   )}
                 />
                 <Controller
-                  name="cameraId"
+                  name="hanetDeviceId"
                   control={control}
                   render={({ field }) => (
-                    <FormFieldCol label="Camera">
-                      <SelectPicker
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value)
-                          const s = cameraOptions.find((o) => o.value === value)
-                          form.setValue("cameraName", s?.label ?? "")
-                        }}
-                        options={cameraOptions}
-                        placeholder="Chọn camera"
-                      />
+                    <FormFieldCol label="Camera (HANET)">
+                      <div className="space-y-2">
+                        {hanetStatus?.configured ? (
+                          <HanetPlaceSelect
+                            layout="stacked"
+                            value={hanetPlaceId}
+                            onChange={setHanetPlaceId}
+                            defaultPlaceId={hanetStatus.defaultPlaceId}
+                          />
+                        ) : (
+                          <p className="text-xs text-amber-700 dark:text-amber-400">
+                            Chưa cấu hình OAuth HANET —{" "}
+                            <Link
+                              href={hanetPath()}
+                              className="font-medium underline"
+                            >
+                              trang HANET
+                            </Link>
+                            .
+                          </p>
+                        )}
+                        <SelectPicker
+                          value={field.value}
+                          onChange={(value) => {
+                            field.onChange(value != null ? String(value) : "")
+                            const selected = deviceOptions.find(
+                              (o) => o.value === value
+                            )
+                            form.setValue("cameraName", selected?.label ?? "")
+                          }}
+                          options={deviceOptions}
+                          placeholder={
+                            devicesLoading
+                              ? "Đang tải thiết bị HANET…"
+                              : "Chọn camera"
+                          }
+                        />
+                        {devicesLoading ? (
+                          <p className="text-xs text-muted-foreground">
+                            Đang tải danh sách thiết bị HANET…
+                          </p>
+                        ) : hanetStatus?.configured &&
+                          effectivePlaceId &&
+                          !hanetDevices?.length ? (
+                          <p className="text-xs text-amber-700 dark:text-amber-400">
+                            Không có thiết bị cho địa điểm này — kiểm tra cổng
+                            HANET hoặc chọn địa điểm khác.
+                          </p>
+                        ) : null}
+                      </div>
                     </FormFieldCol>
                   )}
                 />
               </div>
-              <Controller
-                name="templateId"
-                control={control}
-                render={({ field }) => (
-                  <FormFieldCol label="Template">
-                    <SelectPicker
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value)
-                        const s = templateOptions.find((o) => o.value === value)
-                        form.setValue("templateName", s?.label ?? "")
-                      }}
-                      options={templateOptions}
-                      placeholder="Chọn template"
-                    />
-                  </FormFieldCol>
-                )}
-              />
             </FieldSetContent>
           </FieldSet>
         </AdminFormMain>

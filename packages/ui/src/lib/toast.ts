@@ -11,9 +11,6 @@ import {
   type ToastCopyContext,
   type ToastOptions,
   type ToastVariant,
-  TOAST_COPY_HINT_DONE,
-  TOAST_COPY_HINT_ERROR,
-  TOAST_COPY_HINT_LOADING,
   toSonnerToastOptions,
 } from "./toast-types"
 
@@ -69,13 +66,8 @@ function mergeOperationToastOptions(
   if (variant === "loading") {
     merged.copyStartedAt = merged.copyStartedAt ?? Date.now()
     merged.copyVariant = merged.copyVariant ?? "loading"
-    merged.description = merged.description ?? TOAST_COPY_HINT_LOADING
     if (merged.duration == null) merged.duration = Number.POSITIVE_INFINITY
   } else if (startedAt != null) {
-    if (!merged.description) {
-      merged.description =
-        variant === "error" ? TOAST_COPY_HINT_ERROR : TOAST_COPY_HINT_DONE
-    }
     if (variant === "success" && merged.duration == null) {
       merged.duration = 6000
     }

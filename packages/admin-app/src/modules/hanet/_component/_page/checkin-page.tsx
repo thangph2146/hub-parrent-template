@@ -38,6 +38,7 @@ import {
   useHanetCheckinLive,
   useHanetDevicesQuery,
   useHanetStatusQuery,
+  useHanetWebhookRecentQuery,
 } from "../queries"
 import { useAdminApi } from "@workspace/admin-app/runtime"
 
@@ -108,8 +109,17 @@ function CheckinContent() {
   const [pendingLiveRows, setPendingLiveRows] = useState<HanetCheckinRow[]>([])
 
   const { data: hanetStatus } = useHanetStatusQuery(undefined, {
-    refetchInterval: fetchEnabled && liveEnabled ? 5_000 : false,
+    refetchInterval: liveEnabled ? 5_000 : false,
   })
+
+  const webhookRecentQuery = useHanetWebhookRecentQuery(liveEnabled, {
+    refetchInterval: liveEnabled ? 5_000 : false,
+  })
+
+  const lastWebhookAt =
+    webhookRecentQuery.data?.[0]?.receivedAt ??
+    hanetStatus?.webhookIngest?.lastReceivedAt ??
+    null
 
   const effectivePlaceId =
     selectedPlaceId || hanetStatus?.defaultPlaceId || ""
@@ -596,7 +606,9 @@ function CheckinContent() {
           socketError={socketError}
           webhookLocalhost={hanetStatus?.webhookLocalhost === true}
           webhookUrl={hanetStatus?.urls?.auto ?? null}
-          lastWebhookAt={hanetStatus?.webhookIngest?.lastReceivedAt ?? null}
+          lastWebhookAt={lastWebhookAt}
+          webhookVerify={hanetStatus?.webhookVerify === true}
+          clientId={hanetStatus?.clientId ?? null}
         />
       ) : null}
 

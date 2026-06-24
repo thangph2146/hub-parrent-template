@@ -609,7 +609,10 @@ export function StaffPageInner() {
               }}
               roleOptions={[
                 { value: "none", label: "Chưa gán vai trò" },
-                ...roles.map((r) => ({ value: r.code, label: r.name })),
+                ...roles.map((r: { code: string; name: string }) => ({
+                  value: r.code,
+                  label: r.name,
+                })),
               ]}
             />
           ) : null}

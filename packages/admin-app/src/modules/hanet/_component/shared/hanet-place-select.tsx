@@ -12,13 +12,17 @@ import {
 import { cn } from "@ui/lib/utils"
 import { useHanetPlacesQuery } from "../queries/use-hanet-places-query"
 import { HANET_ADMIN_PLACE_STORAGE_KEY } from "./hanet-place-storage"
+import type { HanetPlaceOption } from "./hanet-place-parse"
 
 const STORAGE_KEY = HANET_ADMIN_PLACE_STORAGE_KEY
 
 export function useHanetSelectedPlaceId(defaultPlaceId?: string | null) {
   const placesQuery = useHanetPlacesQuery(Boolean(defaultPlaceId) || true)
 
-  const places = useMemo(() => placesQuery.data ?? [], [placesQuery.data])
+  const places = useMemo<HanetPlaceOption[]>(
+    () => placesQuery.data ?? [],
+    [placesQuery.data],
+  )
 
   const resolvedDefault = useMemo(() => {
     if (defaultPlaceId?.trim()) return defaultPlaceId.trim()

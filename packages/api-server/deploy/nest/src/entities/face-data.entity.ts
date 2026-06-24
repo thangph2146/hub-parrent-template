@@ -23,7 +23,7 @@ export class FaceData extends BaseEntity {
   @Property({ nullable: true })
   displayName?: string | null;
 
-  @Property()
+  @Property({ type: 'text' })
   imagePath!: string;
 
   @Property({ default: 1 })

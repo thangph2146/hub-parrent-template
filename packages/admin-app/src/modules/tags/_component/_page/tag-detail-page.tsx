@@ -172,7 +172,13 @@ function TagDetailInner() {
                 className="overflow-hidden px-0 pt-0 pb-0"
               >
                 <div className="flex flex-col">
-                  {tag.posts.map((post) => (
+                  {tag.posts.map(
+                    (post: {
+                      id: number | string
+                      title: string
+                      createdAt: string
+                      published: boolean
+                    }) => (
                     <ListItem
                       key={post.id}
                       icon={File}

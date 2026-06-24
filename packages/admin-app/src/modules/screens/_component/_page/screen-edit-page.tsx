@@ -1,6 +1,6 @@
 "use client"
 import { useAdminModuleNavigation, useAdminApi } from "@workspace/admin-app/runtime"
-import { useCallback, useEffect, useMemo } from "react"
+import { useCallback, useEffect } from "react"
 import {
   buildEntityDraftKey,
   loadEntityDraft,
@@ -15,7 +15,7 @@ import {
   AdminPageLoading,
 } from "@ui/components/admin"
 import { ScreenFormShell } from "../_form"
-import { useScreenForm, buildScreenPayload } from "../_hooks"
+import { useScreenForm, buildScreenSubmitPayload } from "../_hooks"
 import { useScreenDetailQuery } from "../_query"
 import type { ScreenFormValues } from "../shared/types"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
@@ -27,32 +27,12 @@ function EditScreenPageInner() {
     qc = useQueryClient(),
     { form } = useScreenForm()
   const { data: e, isLoading, isError, refetch } = useScreenDetailQuery(api, id)
-  const { data: camerasData } = useQuery({
-    queryKey: ["cameras", "options"],
+  const { data: linkedCamera } = useQuery({
+    queryKey: ["cameras", "detail", e?.cameraId],
     queryFn: () =>
-      api.cameras.list<{ id: string; name: string }>({
-        status: "active",
-        limit: 999,
-      }),
+      api.cameras.get<{ code: string | null; name: string }>(String(e!.cameraId)),
+    enabled: Boolean(e?.cameraId),
   })
-  const { data: templatesData } = useQuery({
-    queryKey: ["templates", "options"],
-    queryFn: () =>
-      api.templates.list<{ id: string; name: string }>({
-        status: "active",
-        limit: 999,
-      }),
-  })
-  const cameraOptions = useMemo(
-    () =>
-      (camerasData?.items ?? []).map((c) => ({ value: c.id, label: c.name })),
-    [camerasData]
-  )
-  const templateOptions = useMemo(
-    () =>
-      (templatesData?.items ?? []).map((t) => ({ value: t.id, label: t.name })),
-    [templatesData]
-  )
   useEffect(() => {
     if (isError) {
       toast.error("Không tải được màn hình")
@@ -68,13 +48,19 @@ function EditScreenPageInner() {
     form.reset({
       name: e.name ?? "",
       code: e.code ?? "",
+      hanetDeviceId: "",
       cameraId: e.cameraId ?? "",
       cameraName: e.cameraName ?? "",
-      templateId: e.templateId ?? "",
-      templateName: e.templateName ?? "",
       status: e.status ?? 1,
     })
   })
+  useEffect(() => {
+    if (!linkedCamera?.code) return
+    form.setValue("hanetDeviceId", linkedCamera.code)
+    if (linkedCamera.name) {
+      form.setValue("cameraName", linkedCamera.name)
+    }
+  }, [linkedCamera?.code, linkedCamera?.name, form])
   const inv = async () => {
     await qc.invalidateQueries({ queryKey: ["screens"] })
   }
@@ -93,9 +79,9 @@ function EditScreenPageInner() {
   })
   const h = useCallback(
     async (v: ScreenFormValues) => {
-      await mut.mutateAsync(buildScreenPayload(v))
+      await mut.mutateAsync(await buildScreenSubmitPayload(api, v))
     },
-    [mut]
+    [api, mut]
   )
   if (isLoading) return <AdminPageLoading variant="form" />
   if (!e) return null
@@ -106,8 +92,6 @@ function EditScreenPageInner() {
         onSubmit={h}
         submitting={mut.isPending}
         editingId={id}
-        cameraOptions={cameraOptions}
-        templateOptions={templateOptions}
         onBack={() => crudNav.view(String(id))}
         onReset={async () => {
           await refetch()

@@ -192,7 +192,7 @@ function PostDetailInner() {
               <FieldSectionField label="Danh mục" icon={Tags}>
                 {post.categories.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">
-                    {post.categories.map((cat) => (
+                    {post.categories.map((cat: { id: number | string; name: string }) => (
                       <Badge
                         key={cat.id}
                         variant="secondary"
@@ -209,7 +209,7 @@ function PostDetailInner() {
               <FieldSectionField label="Thẻ">
                 {post.tags.length > 0 ? (
                   <div className="flex flex-wrap gap-1.5">
-                    {post.tags.map((tag) => (
+                    {post.tags.map((tag: { id: number | string; name: string }) => (
                       <Badge key={tag.id} variant="outline" className="text-xs">
                         {tag.name}
                       </Badge>

@@ -44,8 +44,10 @@ export function EventHanetAvatarPanel({
       api.hanet.syncPersonAvatars(effectivePlaceId || undefined),
     toast: {
       loading: "Đang đồng bộ avatar từ HANET…",
-      success: (res: HanetSyncAvatarsResult) =>
-        `Đã đồng bộ ${res.fetched} người (${res.created} mới, ${res.updated} cập nhật)`,
+      success: (res: HanetSyncAvatarsResult) => {
+        const base = `Đã đồng bộ ${res.fetched} người (${res.created} mới, ${res.updated} cập nhật)`
+        return res.failed > 0 ? `${base} · ${res.failed} lỗi` : base
+      },
       error: (err) =>
         err instanceof Error ? err.message : "Không đồng bộ được avatar HANET",
     },

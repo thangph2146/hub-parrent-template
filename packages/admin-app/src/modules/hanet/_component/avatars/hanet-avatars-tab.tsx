@@ -63,10 +63,13 @@ export function HanetAvatarsTab() {
       api.hanet.syncPersonAvatars(effectivePlaceId || undefined),
     toast: {
       loading: "Đang đồng bộ avatar từ HANET vào face_data…",
-      success: (res: HanetSyncAvatarsResult) =>
-        res.listLimited && res.hanetTotal != null
-          ? `Đã đồng bộ ${res.fetched} người (HANET có ${res.hanetTotal} — API chỉ trả ~${res.hanetListCap ?? 50}/lần)`
-          : `Đã đồng bộ ${res.fetched} người (${res.created} mới, ${res.updated} cập nhật)`,
+      success: (res: HanetSyncAvatarsResult) => {
+        const base =
+          res.listLimited && res.hanetTotal != null
+            ? `Đã đồng bộ ${res.fetched} người (HANET có ${res.hanetTotal} — API chỉ trả ~${res.hanetListCap ?? 50}/lần)`
+            : `Đã đồng bộ ${res.fetched} người (${res.created} mới, ${res.updated} cập nhật)`
+        return res.failed > 0 ? `${base} · ${res.failed} lỗi` : base
+      },
       error: (err) =>
         err instanceof Error ? err.message : "Không đồng bộ được avatar HANET",
     },

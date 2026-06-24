@@ -1235,7 +1235,6 @@ export function AdminDataTable<TData>({
     rowReorderColumnEnabled,
   ])
 
-  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table returns unstable function refs
   const table = useReactTable({
     data: effectiveData,
     columns: tableColumns,

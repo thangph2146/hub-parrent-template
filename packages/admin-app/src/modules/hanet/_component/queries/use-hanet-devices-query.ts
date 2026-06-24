@@ -1,6 +1,7 @@
 import { useAdminApi } from "@workspace/admin-app/runtime"
 import { useQuery } from "@tanstack/react-query"
 import { parseHanetDevicesResponse } from "../shared/hanet-device-parse"
+import type { HanetDeviceOption } from "../shared/hanet-device-parse"
 
 export function hanetDevicesQueryKey(placeId: string) {
   return ["hanet", "devices", placeId] as const
@@ -8,7 +9,7 @@ export function hanetDevicesQueryKey(placeId: string) {
 
 export function useHanetDevicesQuery(placeId: string, enabled = true) {
   const api = useAdminApi()
-  return useQuery({
+  return useQuery<HanetDeviceOption[]>({
     queryKey: hanetDevicesQueryKey(placeId),
     queryFn: async () => {
       const data = await api.hanet.listDevices(placeId || undefined)

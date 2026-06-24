@@ -58,7 +58,7 @@ Module closure (`resolve-module-closure`) và entity closure (`resolve-entity-cl
 | `Product` | `product.entity.ts` | — |
 | `PromoCode` | `promo-code.entity.ts` | — |
 | `Role` | `role.entity.ts` | `UserRole` |
-| `Screen` | `screen.entity.ts` | `Camera`, `Template` |
+| `Screen` | `screen.entity.ts` | `Camera` |
 | `SeoMeta` | `seo-meta.entity.ts` | — |
 | `Session` | `session.entity.ts` | `User` |
 | `Setting` | `setting.entity.ts` | — |

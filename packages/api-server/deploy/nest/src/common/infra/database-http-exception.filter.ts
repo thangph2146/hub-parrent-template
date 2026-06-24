@@ -58,6 +58,13 @@ export class DatabaseHttpExceptionFilter
         message =
           'Giá trị này đã tồn tại (trùng dữ liệu). Vui lòng chọn giá trị khác.';
       } else if (
+        code === 'ER_DATA_TOO_LONG' ||
+        code === '22001' ||
+        lowerMsg.includes('data too long')
+      ) {
+        message =
+          'Dữ liệu quá dài cho cột database (vd. URL avatar HANET). Chạy migration mới nhất hoặc liên hệ quản trị.';
+      } else if (
         code === 'ER_ROW_IS_REFERENCED_2' ||
         code === '23503' ||
         lowerMsg.includes('foreign key constraint')

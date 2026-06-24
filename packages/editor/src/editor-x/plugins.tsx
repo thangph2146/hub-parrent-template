@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, type ReactElement } from "react"
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin"
 import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin"
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary"
@@ -99,7 +99,7 @@ export function Plugins({
   readOnly?: boolean
   placeholder?: string
   stickyTop?: number
-}) {
+}): ReactElement {
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null)
   const [isLinkEditMode, setIsLinkEditMode] = useState<boolean>(false)
