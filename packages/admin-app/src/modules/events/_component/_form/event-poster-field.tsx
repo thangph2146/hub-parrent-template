@@ -5,7 +5,8 @@ import { ImageIcon, ImagePlus, Loader2, X } from "lucide-react"
 import { toast } from "@ui/components/sonner"
 import { Input } from "@ui/components/input"
 import { FormFieldCol } from "@ui/components/typing"
-import { uploadEventPoster } from "../utils"
+import { useAdminApi } from "@workspace/admin-app/runtime"
+import { uploadEventPoster } from "../shared/utils"
 
 type EventPosterFieldProps = {
   value: string
@@ -21,6 +22,7 @@ export function EventPosterField({
   onChange,
   eventTitle,
 }: EventPosterFieldProps) {
+  const api = useAdminApi()
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const displayUrl = value.trim()
@@ -28,7 +30,7 @@ export function EventPosterField({
   const handleFile = async (file: File) => {
     setUploading(true)
     try {
-      const url = await uploadEventPoster(file)
+      const url = await uploadEventPoster(api, file)
       onChange(url)
       toast.success("Đã tải poster lên")
     } catch {

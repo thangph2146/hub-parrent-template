@@ -10,7 +10,7 @@ const {
   verifyAdminHostLibDir,
   verifyAdminHostHooksDir,
   STORE_LIB_ADMIN_SUBSTANTIVE,
-} = require("../admin/lib/admin-host-lib-rules.cjs")
+} = require("../lib/admin-host-lib-rules.cjs")
 const { NEXT_APP_FORBIDDEN_SOURCE_PATTERNS } = require("../lib/import-alias-rules.cjs")
 
 const STORE_FRONT = path.join(ROOT, PRODUCT_LINES["store-sync"].frontend.path)

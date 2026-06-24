@@ -19,7 +19,7 @@ import { TreePicker } from "@ui/components/pickers"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { MapPin, Hash, Globe } from "lucide-react"
-import type { LocationFormValues } from "../types"
+import type { LocationFormValues } from "../shared/types"
 
 export interface LocationFormShellProps {
   form: UseFormReturn<LocationFormValues>

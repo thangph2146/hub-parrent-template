@@ -1,4 +1,4 @@
-export { getCategoryColumns } from "./columns"
+export { getCategoryColumns } from "./_table/columns"
 export {
   slugify,
   buildCategoryOptionTree,
@@ -9,7 +9,7 @@ export {
   buildCategoriesFilterQuery,
   formatDateTime,
   type CategoryTreeNode,
-} from "./utils"
+} from "./shared/utils"
 export {
   useColumnFiltersChange,
   useClearListFilters,
@@ -31,9 +31,23 @@ export {
   useCategoriesOptionsQuery,
 } from "./_query"
 export { CategoryFormShell } from "./_form"
-export type { CategoryDetail, ChildCategory, RelatedPost } from "./types"
+export type {
+  CategoryRow,
+  CategoryDetail,
+  ChildCategory,
+  RelatedPost,
+  CategoryConfirmAction,
+} from "./shared/types"
 export {
   useCategoryDetailQuery,
   categoryDetailQueryKey,
   prefetchCategoryDetail,
 } from "./_query"
+export {
+  default,
+  default as CategoriesPage,
+  CategoriesPageInner,
+} from "./_page/categories-page"
+export { default as CategoryDetailPage } from "./_page/category-detail-page"
+export { default as NewCategoryPage } from "./_page/category-new-page"
+export { default as EditCategoryPage } from "./_page/category-edit-page"

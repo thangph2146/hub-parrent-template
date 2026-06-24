@@ -17,6 +17,7 @@ import {
 import type { ProductImageUploadContext } from "@workspace/admin-app/lib/product-image-storage-stub"
 
 import { createAdminStoragePickerAdapters } from "./admin-storage-picker-adapters"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 
 import {
   buildProductStorageFolderScope,
@@ -48,21 +49,22 @@ export function StorageImagePickerDialog({
 
   multiSelect?: boolean
 }) {
-  const adapters = useMemo(() => createAdminStoragePickerAdapters(), [])
+  const api = useAdminApi()
+  const adapters = useMemo(() => createAdminStoragePickerAdapters(api), [api])
 
   const productCtx = open ? (resolveProductUpload?.() ?? null) : null
 
   const folderScope = useMemo((): AdminStoragePickerFolderScope | null => {
     if (!resolveProductUpload || !productCtx) return null
 
-    return buildProductStorageFolderScope(productCtx)
-  }, [productCtx, resolveProductUpload])
+    return buildProductStorageFolderScope(api, productCtx)
+  }, [api, productCtx, resolveProductUpload])
 
   const upload = useMemo(() => {
     if (!resolveProductUpload) return undefined
 
-    return buildProductStorageUploadConfig(resolveProductUpload, productCtx)
-  }, [productCtx, resolveProductUpload])
+    return buildProductStorageUploadConfig(api, resolveProductUpload, productCtx)
+  }, [api, productCtx, resolveProductUpload])
 
   if (resolveProductUpload && !productCtx) {
     return (

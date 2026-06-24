@@ -5,7 +5,8 @@ import { ImageIcon, ImagePlus, Loader2, X } from "lucide-react"
 import { toast } from "@ui/components/sonner"
 import { Input } from "@ui/components/input"
 import { FormFieldCol } from "@ui/components/typing"
-import { uploadPostImage } from "../utils"
+import { useAdminApi } from "@workspace/admin-app/runtime"
+import { uploadPostImage } from "../shared/utils"
 
 type PostImageFieldProps = {
   value: string
@@ -19,6 +20,7 @@ export function PostImageField({
   onChange,
   postTitle,
 }: PostImageFieldProps) {
+  const api = useAdminApi()
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const displayUrl = value.trim()
@@ -26,7 +28,7 @@ export function PostImageField({
   const handleFile = async (file: File) => {
     setUploading(true)
     try {
-      const url = await uploadPostImage(file)
+      const url = await uploadPostImage(api, file)
       onChange(url)
       toast.success("Đã tải ảnh đại diện lên")
     } catch {

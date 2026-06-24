@@ -1,10 +1,17 @@
-export * from "./types"
-export * from "./columns"
-export * from "./order-items-table"
-export * from "./order-items-columns"
-export * from "./order-item-row-actions"
-export * from "./order-row-actions"
-export * from "./order-status-visual"
-export * from "./order-bulk-status-menu"
-export * from "./orders-bulk-actions"
-export * from "./use-orders-queries"
+export * from "./shared/types"
+export * from "./_table/columns"
+export * from "./_table/order-items-table"
+export * from "./_table/order-items-columns"
+export * from "./_table/order-item-row-actions"
+export * from "./_table/order-row-actions"
+export * from "./_table/order-status-visual"
+export * from "./_table/order-bulk-status-menu"
+export * from "./_table/orders-bulk-actions"
+export * from "./_query/use-orders-queries"
+export {
+  default,
+  default as OrdersPage,
+  OrdersPageInner,
+} from "./_page/orders-page"
+export { default as OrdersDetailPage } from "./_page/orders-detail-page"
+export { default as OrdersEditPage } from "./_page/orders-edit-page"

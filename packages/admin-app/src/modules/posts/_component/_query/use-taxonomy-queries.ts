@@ -1,8 +1,7 @@
-import { api } from "@workspace/admin-app/lib/api"
 import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
 import type { StoreSyncSdk } from "@workspace/api-client"
-import type { CategoryTreeOption, TaxonomyOption } from "../types"
+import type { CategoryTreeOption, TaxonomyOption } from "../shared/types"
 
 export function useCategoriesQuery(
   api: StoreSyncSdk

@@ -10,6 +10,8 @@ export {
   type AuthProfilePatch,
 } from "./admin-app-context"
 export { usePatchAuthProfile } from "./admin-app-context"
+export { createAdminSdk, resolveImportApi } from "../lib/create-admin-sdk"
+export type { CreateAdminSdkOptions } from "../lib/create-admin-sdk"
 export { useAdminModuleNavigation } from "./use-admin-module-navigation"
 export {
   joinAdminPath,

@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import {
   Activity,
@@ -17,7 +17,7 @@ import { Badge } from "@ui/components/badge"
 import { Button } from "@ui/components/button"
 import { cn } from "@ui/lib/utils"
 import { buildEventDetailXlsxExport } from "@ui/components/admin"
-import type { EventDetail } from "../types"
+import type { EventDetail } from "../shared/types"
 import {
   useEventDetailQuery,
   useEventRegistrationsQuery,
@@ -35,7 +35,7 @@ import {
   getEventLiveActivityColumns,
   getEventLiveActivityGlobalFilterText,
   type EventLiveActivityRow,
-} from "../live-activity-columns"
+} from "./live-activity-columns"
 
 const LIVE_POLL_MS = 15_000
 const LIVE_POLL_SOCKET_MS = 60_000
@@ -59,6 +59,7 @@ export function EventLiveMonitorTab({
     "totalRegistrations" | "totalCheckins" | "totalCheckouts"
   >
 }) {
+  const api = useAdminApi()
   const [liveEnabled, setLiveEnabled] = useState(true)
   const {
     connected: socketConnected,

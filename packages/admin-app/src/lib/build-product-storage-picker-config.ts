@@ -3,6 +3,7 @@ import type {
   AdminStoragePickerUploadConfig,
 } from "@ui/components/admin/storage"
 import { toast } from "@ui/components/sonner"
+import type { StoreSyncSdk } from "@workspace/api-client"
 import {
   ensureProductImageFolder,
   resolveProductImageFolderNav,
@@ -11,6 +12,7 @@ import {
 import { uploadAdminImage } from "./admin-upload"
 
 export function buildProductStorageFolderScope(
+  api: StoreSyncSdk,
   ctx: ProductImageUploadContext
 ): AdminStoragePickerFolderScope {
   const nav = resolveProductImageFolderNav(
@@ -24,7 +26,7 @@ export function buildProductStorageFolderScope(
     parentLabel: "Sản phẩm",
     realm: "images",
     onBootstrap: async () => {
-      const ensured = await ensureProductImageFolder({
+      const ensured = await ensureProductImageFolder(api, {
         productName: ctx.productName,
         productSlug: ctx.productSlug,
         productSku: ctx.productSku,
@@ -35,6 +37,7 @@ export function buildProductStorageFolderScope(
 }
 
 export function buildProductStorageUploadConfig(
+  api: StoreSyncSdk,
   resolveProductUpload: () => ProductImageUploadContext | null,
   productCtx: ProductImageUploadContext | null
 ): AdminStoragePickerUploadConfig {
@@ -47,7 +50,7 @@ export function buildProductStorageUploadConfig(
       if (!ctx) {
         throw new Error("Nhập tên hoặc SKU sản phẩm trước khi tải ảnh lên")
       }
-      const { uploadFolderPath, created } = await ensureProductImageFolder({
+      const { uploadFolderPath, created } = await ensureProductImageFolder(api, {
         productName: ctx.productName,
         productSlug: ctx.productSlug,
         productSku: ctx.productSku,
@@ -56,7 +59,7 @@ export function buildProductStorageUploadConfig(
       let fail = 0
       for (const file of files) {
         try {
-          const url = await uploadAdminImage(file, {
+          const url = await uploadAdminImage(api, file, {
             folderPath: uploadFolderPath,
             isExistingFolder: true,
           })

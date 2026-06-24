@@ -1,7 +1,7 @@
 import type { UseMutationResult } from "@tanstack/react-query"
 import { useCallback } from "react"
 import { toast } from "@ui/components/sonner"
-import type { PostConfirmAction, PostListRow } from "../types"
+import type { PostConfirmAction, PostListRow } from "../shared/types"
 
 export interface UsePostsActionsProps {
   deleteMutation: UseMutationResult<unknown, Error, string, unknown>

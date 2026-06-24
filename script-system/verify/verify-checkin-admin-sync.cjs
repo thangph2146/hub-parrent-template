@@ -54,7 +54,7 @@ const {
   verifyAdminHostLibDir,
   verifyAdminHostHooksDir,
   CHECKIN_LIB_ADMIN_SUBSTANTIVE,
-} = require("../admin/lib/admin-host-lib-rules.cjs")
+} = require("../lib/admin-host-lib-rules.cjs")
 
 const FORBIDDEN_IMPORTS = [
   ...NEXT_APP_FORBIDDEN_SOURCE_PATTERNS,

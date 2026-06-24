@@ -1,0 +1,215 @@
+"use client"
+
+import { useCallback, useMemo, useState } from "react"
+import { Button } from "@ui/components/button"
+import { Input } from "@ui/components/input"
+import { Label } from "@ui/components/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@ui/components/popover"
+import { toast } from "@ui/components/sonner"
+import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
+import { resolveStorageFolderSlugPath } from "@workspace/api-client"
+import { createStorageFolder } from "@workspace/admin-app/lib/admin-uploads"
+import { useAdminApi } from "@workspace/admin-app/runtime"
+import { FolderPlus, Loader2 } from "lucide-react"
+import { FileStorageAllowedExtensionsPicker } from "../dialogs/file-storage-allowed-extensions-picker"
+import {
+  extensionsFromGroupIds,
+  getRealmDefaultGroupIds,
+  type StorageExtensionGroupId,
+} from "../shared/storage-upload-policy"
+import type { StorageRealm } from "../shared/types"
+import { resolveCreateFolderParent } from "../shared/utils"
+
+type FileStorageCreateFolderButtonProps = {
+  realm: StorageRealm
+  parentFolderPath?: string
+  parentLabel: string
+  onCreated: (folderPath: string) => Promise<void>
+  disabled?: boolean
+  size?: "default" | "sm"
+}
+
+export function FileStorageCreateFolderButton({
+  realm,
+  parentFolderPath = "",
+  parentLabel,
+  onCreated,
+  disabled = false,
+  size = "sm",
+}: FileStorageCreateFolderButtonProps) {
+  const api = useAdminApi()
+  const [open, setOpen] = useState(false)
+  const [name, setName] = useState("")
+  const [creating, setCreating] = useState(false)
+  const [extensionGroups, setExtensionGroups] = useState<
+    StorageExtensionGroupId[]
+  >(() => getRealmDefaultGroupIds(realm))
+  const isLevel1Create = !parentFolderPath.trim()
+  const slugPreview = useMemo(() => resolveStorageFolderSlugPath(name), [name])
+
+  const handleCreate = useCallback(async () => {
+    const folderName = name.trim()
+    if (!folderName) {
+      toast.error("Vui lòng nhập tên thư mục")
+      return
+    }
+
+    const { parentPath, resourceType } = resolveCreateFolderParent(
+      realm,
+      parentFolderPath
+    )
+
+    setCreating(true)
+    const startedAt = Date.now()
+    const operationLabel = `File storage — tạo thư mục «${folderName}»`
+    const pending = toast.loading(
+      "Đang tạo thư mục…",
+      storageOperationToastOptions({
+        startedAt,
+        operationLabel,
+        variables: { folderName, parentPath, resourceType },
+        adminApi: { method: "POST", path: "/admin/uploads/folders" },
+      }),
+    )
+    try {
+      const result = await createStorageFolder(api, {
+        folderName,
+        parentPath,
+        resourceType,
+        allowedExtensions: isLevel1Create
+          ? extensionsFromGroupIds(resourceType, extensionGroups)
+          : undefined,
+      })
+      toast.success(
+        `Đã tạo thư mục «${result.folderLabel ?? result.folderName}»`,
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { folderName, parentPath, resourceType },
+          data: result,
+          adminApi: { method: "POST", path: "/admin/uploads/folders" },
+          extra: { id: pending },
+        }),
+      )
+      setName("")
+      setOpen(false)
+      await onCreated(result.folderPath)
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Không tạo được thư mục",
+        storageOperationToastOptions({
+          startedAt,
+          operationLabel,
+          variables: { folderName, parentPath, resourceType },
+          error: err,
+          adminApi: { method: "POST", path: "/admin/uploads/folders" },
+          extra: { id: pending },
+        }),
+      )
+    } finally {
+      setCreating(false)
+    }
+  }, [
+    extensionGroups,
+    isLevel1Create,
+    name,
+    onCreated,
+    parentFolderPath,
+    realm,
+    api,
+  ])
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger className="w-auto">
+        <Button
+          type="button"
+          variant="outline"
+          size={size}
+          disabled={disabled || creating}
+          className="shrink-0 gap-1.5"
+        >
+          {creating ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <FolderPlus className="size-4" />
+          )}
+          Tạo folder
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[min(100vw-2rem,22rem)] space-y-3"
+        align="start"
+      >
+        <div className="space-y-1">
+          <p className="text-sm font-medium">Tạo thư mục mới</p>
+          <p className="text-xs text-muted-foreground">
+            Trong «{parentLabel}». Nhập tên tiếng Việt — hệ thống tự tạo slug
+            cho đường dẫn (vd. Sự kiện 1 → su-kien-1).
+          </p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="create-folder-name">Tên hiển thị</Label>
+          <Input
+            id="create-folder-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="vd. Sự kiện 1, Avatars, 2026/06/Hội thảo"
+            disabled={creating}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                void handleCreate()
+              }
+            }}
+          />
+          {slugPreview ? (
+            <div className="rounded-md border border-border/70 bg-muted/20 px-2.5 py-2 text-xs">
+              <p>
+                <span className="text-muted-foreground">Nhãn: </span>
+                <span className="font-medium text-foreground">
+                  {slugPreview.leafLabel}
+                </span>
+              </p>
+              <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+                slug: {slugPreview.slugPath}
+              </p>
+            </div>
+          ) : null}
+        </div>
+        {isLevel1Create ? (
+          <FileStorageAllowedExtensionsPicker
+            realm={realm}
+            value={extensionGroups}
+            onChange={setExtensionGroups}
+            disabled={creating}
+          />
+        ) : null}
+        <div className="flex justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setOpen(false)}
+            disabled={creating}
+          >
+            Hủy
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => void handleCreate()}
+            disabled={creating || !name.trim()}
+          >
+            {creating ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <FolderPlus className="size-4" />
+            )}
+            Tạo
+          </Button>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}

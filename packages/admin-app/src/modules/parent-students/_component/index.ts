@@ -1,4 +1,8 @@
-export * from "./types"
-export * from "./columns"
+export * from "./shared/types"
+export * from "./_table/columns"
 export * from "./_query"
-export * from "./_table"
+export { ParentStudentTable } from "./_table/parent-student-table"
+export {
+  default,
+  default as ParentStudentsPage,
+} from "./_page/parent-students-page"

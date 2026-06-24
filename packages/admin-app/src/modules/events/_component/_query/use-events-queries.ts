@@ -6,7 +6,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@workspace/admin-app/lib/fetch-all-admin-list"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { EventDetail, EventRow } from "../types"
+import type { EventDetail, EventRow } from "../shared/types"
 
 export type EventLiveQueryOptions = {
   enabled?: boolean

@@ -1,11 +1,12 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
 import type {
   AcademicYearConfirmAction,
   AcademicYearFormValues,
-} from "../types"
-import { academicYearFormSchema } from "../types"
+} from "../shared/types"
+import { academicYearFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 const EMPTY_VALUES: AcademicYearFormValues = {

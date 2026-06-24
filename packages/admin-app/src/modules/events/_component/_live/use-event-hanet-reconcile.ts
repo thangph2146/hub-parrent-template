@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type { EventHanetReconcileResult } from "@workspace/api-client"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 
@@ -58,6 +58,7 @@ export function useEventHanetReconcile(options: {
   placeId?: string | null
   eventDay?: string | null
 }) {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   const { eventId, enabled, placeId, eventDay } = options
   const [lastResult, setLastResult] =

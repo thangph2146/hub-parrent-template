@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { createSerializedEditorState, createParagraphNode } from "../utils"
+import { createSerializedEditorState, createParagraphNode } from "../shared/utils"
 
 export const postFormSchema = z.object({
   id: z.coerce.string().optional(),

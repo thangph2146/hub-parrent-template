@@ -1,8 +1,9 @@
+"use client"
 import { useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { GuideFormData } from "../types"
+import type { GuideFormData } from "../shared/types"
 
 export const guideFormSchema = z.object({
   sectionKey: z.string().min(1, "Mã nhóm không được để trống"),

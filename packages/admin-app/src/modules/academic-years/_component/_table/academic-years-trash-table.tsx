@@ -1,4 +1,5 @@
 "use client"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 
 import type {
   ColumnDef,
@@ -10,9 +11,8 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { AcademicYearRow } from "../types"
+import type { AcademicYearRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
-import { api } from "@workspace/admin-app/lib/api"
 import {
   createAdminTrashExportFetchPage,
   type AdminTrashExportParams,
@@ -59,6 +59,7 @@ export function AcademicYearsTrashTable({
   onBulkPurge,
   trashExportParams,
 }: AcademicYearsTrashTableProps) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<AcademicYearRow>
       tableScope="academic-years-trash"

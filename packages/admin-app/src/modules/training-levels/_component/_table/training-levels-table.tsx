@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { TrainingLevelRow } from "../types"
+import type { TrainingLevelRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface TrainingLevelsTableProps {

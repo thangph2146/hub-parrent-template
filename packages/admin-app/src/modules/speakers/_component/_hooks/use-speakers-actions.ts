@@ -1,8 +1,9 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { SpeakerConfirmAction, SpeakerFormValues } from "../types"
-import { speakerFormSchema } from "../types"
+import type { SpeakerConfirmAction, SpeakerFormValues } from "../shared/types"
+import { speakerFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 const EMPTY_VALUES: SpeakerFormValues = {

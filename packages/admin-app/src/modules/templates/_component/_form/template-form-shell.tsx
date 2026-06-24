@@ -18,7 +18,7 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { LayoutTemplate } from "lucide-react"
-import type { TemplateFormValues } from "../types"
+import type { TemplateFormValues } from "../shared/types"
 
 export interface TemplateFormShellProps {
   form: UseFormReturn<TemplateFormValues>

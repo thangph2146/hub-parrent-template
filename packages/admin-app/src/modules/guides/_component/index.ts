@@ -17,7 +17,7 @@ export type {
   GuideFormData,
   UpdateGuideData,
   GuideConfirmAction,
-} from "./types"
+} from "./shared/types"
 
 // Utils
 export {
@@ -26,7 +26,7 @@ export {
   sortGroupsByOrder,
   applyOrderToGroups,
   reorderSteps,
-} from "./utils"
+} from "./shared/utils"
 
 // Hooks
 export { useGuidesActions } from "./_hooks"
@@ -53,4 +53,12 @@ export { GuidesConfirmDialog } from "./_alert-dialog"
 
 // Table components
 export { GuidesTable } from "./_table"
-export { getGuidesColumns, type GuideColumnsProps } from "./columns"
+export { getGuidesColumns, type GuideColumnsProps } from "./_table/columns"
+export {
+  default,
+  default as GuidesPage,
+  GuidesPageInner,
+} from "./_page/guides-page"
+export { default as GuidesDetailPage } from "./_page/guides-detail-page"
+export { default as GuidesNewPage } from "./_page/guides-new-page"
+export { default as GuidesEditPage } from "./_page/guides-edit-page"

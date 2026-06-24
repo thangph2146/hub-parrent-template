@@ -1,9 +1,10 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { TagConfirmAction } from "../types"
+import type { TagConfirmAction } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { tagFormSchema, type TagFormValues } from "../types"
+import { tagFormSchema, type TagFormValues } from "../shared/types"
 
 const EMPTY_VALUES: TagFormValues = { name: "", slug: "", icon: null }
 

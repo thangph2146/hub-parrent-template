@@ -1,2 +1,5 @@
 export { MyRegisteredEventsTable } from "./my-registered-events-table"
 export type { MyRegisteredEventsTableProps } from "./my-registered-events-table"
+export { getMyRegisteredEventColumns } from "./columns"
+export { buildMyRegisteredEventsBulkActions } from "./my-registered-events-bulk-actions"
+export { MyRegisteredEventsStatCards } from "./my-registered-events-stat-cards"

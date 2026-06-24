@@ -1,6 +1,7 @@
 import type { AdminStoragePickerAdapters } from "@ui/components/admin/storage"
 import { extractStorageRelativePath } from "@ui/components/admin/storage"
-import { api } from "@workspace/admin-app/lib/api"
+import type { StoreSyncSdk } from "@workspace/api-client"
+
 function normalizeStoragePaths(paths: string[]): string[] {
   return [
     ...new Set(
@@ -12,7 +13,9 @@ function normalizeStoragePaths(paths: string[]): string[] {
 }
 
 /** Adapter kho lưu trữ cho `AdminStorageImagePickerDialog` — HTTP qua api-client. */
-export function createAdminStoragePickerAdapters(): AdminStoragePickerAdapters {
+export function createAdminStoragePickerAdapters(
+  api: StoreSyncSdk
+): AdminStoragePickerAdapters {
   return {
     listFiles: (params) =>
       api.uploads.list(params.page, params.limit, {

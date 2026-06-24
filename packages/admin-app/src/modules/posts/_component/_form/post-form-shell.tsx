@@ -30,10 +30,10 @@ import {
   Search,
   Tags,
 } from "lucide-react"
-import { getSeoStatus, slugify as defaultSlugify } from "../utils"
+import { getSeoStatus, slugify as defaultSlugify } from "../shared/utils"
 import { PostImageField } from "./post-image-field"
 import type { PostFormValues } from "../_hooks"
-import type { CategoryTreeOption, TaxonomyOption } from "../types"
+import type { CategoryTreeOption, TaxonomyOption } from "../shared/types"
 
 export interface PostFormShellProps {
   form: UseFormReturn<PostFormValues>

@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -6,7 +5,7 @@ import {
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@workspace/admin-app/lib/fetch-all-admin-list"
 import type { StoreSyncSdk } from "@workspace/api-client"
-import type { CameraDetail, CameraRow } from "../types"
+import type { CameraDetail, CameraRow } from "../shared/types"
 
 export const cameraDetailQueryKey = (id: string) =>
   ["cameras", "detail", id] as const

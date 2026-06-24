@@ -18,7 +18,7 @@ import { TreePicker } from "@ui/components/pickers"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { BookOpen, CalendarDays, Hash } from "lucide-react"
-import type { CourseFormValues } from "../types"
+import type { CourseFormValues } from "../shared/types"
 
 export interface CourseFormShellProps {
   form: UseFormReturn<CourseFormValues>

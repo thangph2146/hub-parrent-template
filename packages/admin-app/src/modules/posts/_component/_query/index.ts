@@ -9,6 +9,7 @@ export type {
   UsePostsQueriesProps,
   UseTrashQueryProps,
 } from "./use-posts-queries"
+export { usePostsByAuthor } from "./use-posts-queries"
 export { useCategoriesQuery, useTagsQuery } from "./use-taxonomy-queries"
 export {
   useDeleteMutation,

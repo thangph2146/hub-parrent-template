@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -7,7 +6,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@workspace/admin-app/lib/fetch-all-admin-list"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { SeoMetaDetail, SeoMetaRow } from "../types"
+import type { SeoMetaDetail, SeoMetaRow } from "../shared/types"
 
 export const seoMetaDetailQueryKey = (id: string) =>
   ["seo-metas", "detail", id] as const

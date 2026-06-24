@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -6,7 +5,7 @@ import {
 import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { PostDetail, PostListRow } from "../types"
+import type { PostDetail, PostListRow } from "../shared/types"
 
 function toFilterQuery(
   filters: Record<string, unknown>

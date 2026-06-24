@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -7,7 +6,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@workspace/admin-app/lib/fetch-all-admin-list"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { TrainingSystemDetail, TrainingSystemRow } from "../types"
+import type { TrainingSystemDetail, TrainingSystemRow } from "../shared/types"
 
 export const trainingSystemDetailQueryKey = (id: string) =>
   ["training-systems", "detail", id] as const

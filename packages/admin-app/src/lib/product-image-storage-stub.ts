@@ -1,3 +1,5 @@
+import type { StoreSyncSdk } from "@workspace/api-client"
+
 /**
  * Stub type cho file-storage sync từ main — check-in không có module products.
  * `resolveProductUpload` không dùng trên check-in; chỉ cần type + export an toàn nếu gọi nhầm.
@@ -21,11 +23,13 @@ export function resolveProductImageFolderNav(
 }
 
 export async function ensureProductImageFolder(
+  _api: StoreSyncSdk,
   _input: Pick<
     ProductImageUploadContext,
     "productName" | "productSlug" | "productSku"
   >,
 ): Promise<{ navPath: string; uploadFolderPath: string; created: boolean }> {
+  void _api
   void _input
   throw new Error(
     "Module products không có trên HUB Check-in — không dùng upload ảnh sản phẩm.",

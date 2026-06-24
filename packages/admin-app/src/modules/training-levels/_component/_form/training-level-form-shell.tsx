@@ -18,7 +18,7 @@ import { TreePicker } from "@ui/components/pickers"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Hash, Tag } from "lucide-react"
-import type { TrainingLevelFormValues } from "../types"
+import type { TrainingLevelFormValues } from "../shared/types"
 
 export interface TrainingLevelFormShellProps {
   form: UseFormReturn<TrainingLevelFormValues>

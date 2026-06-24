@@ -1,7 +1,7 @@
 import { Archive, ArchiveRestore, Lock, Trash2, Unlock } from "lucide-react"
 import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell"
 import { AdminConfirmActionDialog } from "@ui/components/admin"
-import type { StaffRow, StaffBulkActionKind } from "../types"
+import type { StaffRow, StaffBulkActionKind } from "../shared/types"
 
 interface StaffConfirmDialogProps {
   open: boolean

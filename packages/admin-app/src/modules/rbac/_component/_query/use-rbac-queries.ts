@@ -1,23 +1,12 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import type { RbacPermission, RbacRole } from "@workspace/api-client"
-import type { CreateRoleInput, UpdateRoleInput } from "../types"
+import type { CreateRoleInput, UpdateRoleInput } from "../shared/types"
+import type { RoleRow } from "../shared/utils"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { rbacQueryKeys } from "./rbac-query-keys"
-
-export type RoleRow = {
-  id: string
-  code: string
-  name: string
-  description: string | null
-  permissions: string[]
-  isActive: boolean
-  createdAt: string | null
-  updatedAt: string | null
-  deletedAt: string | null
-}
 
 function normalizePermissions(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -64,6 +53,7 @@ function normalizeRole(raw: Record<string, unknown>): RoleRow {
 export { rbacQueryKeys } from "./rbac-query-keys"
 
 export function useRbacCatalog(opts?: { enabled?: boolean }) {
+  const api = useAdminApi()
   return useQuery({
     queryKey: rbacQueryKeys.catalog(),
     queryFn: async (): Promise<{
@@ -81,6 +71,7 @@ export function useRbacCatalog(opts?: { enabled?: boolean }) {
 }
 
 export function useRoleDetail(id: string) {
+  const api = useAdminApi()
   return useQuery({
     queryKey: rbacQueryKeys.detail(id),
     queryFn: async () => {
@@ -92,6 +83,7 @@ export function useRoleDetail(id: string) {
 }
 
 export function useCreateRoleMutation() {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
 
   return useAdminMutation({
@@ -118,6 +110,7 @@ export function useCreateRoleMutation() {
 }
 
 export function useUpdateRoleMutation() {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
 
   return useAdminMutation({
@@ -147,6 +140,7 @@ export function useUpdateRoleMutation() {
 }
 
 export function useDeleteRoleMutation() {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
 
   return useAdminMutation({

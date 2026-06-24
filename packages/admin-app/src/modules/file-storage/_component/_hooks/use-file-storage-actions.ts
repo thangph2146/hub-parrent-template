@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react"
 import { toast, type ToastOptions } from "@ui/components/sonner"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import { storageOperationToastOptions } from "@workspace/admin-app/lib/storage-operation-toast"
 import {
   deleteUploadedFilesBulk,
@@ -9,13 +10,13 @@ import {
   fetchAllFileStorageRows,
   importFileStorageArchive,
 } from "@workspace/admin-app/lib/admin-uploads"
-import type { FileStorageImportConfirmState } from "../file-storage-import-confirm-dialogs"
+import type { FileStorageImportConfirmState } from "../dialogs/file-storage-import-confirm-dialogs"
 import {
   buildAcceptAttribute,
   getRealmDefaultExtensions,
-} from "../storage-upload-policy"
-import type { FileStorageRow, StorageRealm } from "../types"
-import { downloadStorageFile } from "../utils"
+} from "../shared/storage-upload-policy"
+import type { FileStorageRow, StorageRealm } from "../shared/types"
+import { downloadStorageFile } from "../shared/utils"
 
 function triggerBrowserDownload(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob)
@@ -56,6 +57,7 @@ export function useFileStorageActions({
   uploadOwnerFilter = "",
   reload,
 }: UseFileStorageActionsOptions) {
+  const api = useAdminApi()
   const importInputRef = useRef<HTMLInputElement>(null)
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -97,7 +99,7 @@ export function useFileStorageActions({
       }),
     )
     try {
-      const { blob, meta } = await exportFileStorageArchive()
+      const { blob, meta } = await exportFileStorageArchive(api)
       if (!blob.size) {
         toast.error("Không có file để tải về", {
           id: listToast,
@@ -141,7 +143,7 @@ export function useFileStorageActions({
     } finally {
       setDownloadingAll(false)
     }
-  }, [downloadingAll, downloadingPath])
+  }, [api, downloadingAll, downloadingPath])
 
   const handleBulkDownload = useCallback(
     async (selectedRows: FileStorageRow[]) => {
@@ -181,7 +183,7 @@ export function useFileStorageActions({
         })
       )
       try {
-        const result = await deleteUploadedFilesBulk(paths)
+        const result = await deleteUploadedFilesBulk(api, paths)
         const toastOpts = buildFileStorageToastOptions({
           startedAt,
           operationLabel,
@@ -220,7 +222,7 @@ export function useFileStorageActions({
         throw err
       }
     },
-    [reload]
+    [api, reload]
   )
 
   const handleBulkDelete = useCallback(
@@ -261,7 +263,7 @@ export function useFileStorageActions({
       }),
     )
     try {
-      const allRows = await fetchAllFileStorageRows(
+      const allRows = await fetchAllFileStorageRows(api, 
         activeRealm,
         activeFolderPath || undefined,
         {
@@ -298,6 +300,7 @@ export function useFileStorageActions({
       throw err
     }
   }, [
+    api,
     activeFolderPath,
     activeRealm,
     includeDescendants,
@@ -306,11 +309,11 @@ export function useFileStorageActions({
   ])
 
   const fetchAllRowsInScope = useCallback(async () => {
-    return fetchAllFileStorageRows(activeRealm, activeFolderPath || undefined, {
+    return fetchAllFileStorageRows(api, activeRealm, activeFolderPath || undefined, {
       includeDescendants,
       uploadOwnerId: uploadOwnerFilter.trim() || undefined,
     })
-  }, [activeFolderPath, activeRealm, includeDescendants, uploadOwnerFilter])
+  }, [api, activeFolderPath, activeRealm, includeDescendants, uploadOwnerFilter])
 
   const clearImportConfirm = useCallback(() => {
     setImportConfirm(null)
@@ -332,7 +335,7 @@ export function useFileStorageActions({
         }),
       )
       try {
-        const result = await importFileStorageArchive(file, { overwrite })
+        const result = await importFileStorageArchive(api, file, { overwrite })
         const total =
           result.totalEntries ??
           result.restored + result.skipped + result.failed
@@ -389,7 +392,7 @@ export function useFileStorageActions({
         if (importInputRef.current) importInputRef.current.value = ""
       }
     },
-    [reload]
+    [api, reload]
   )
 
   const handleImport = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

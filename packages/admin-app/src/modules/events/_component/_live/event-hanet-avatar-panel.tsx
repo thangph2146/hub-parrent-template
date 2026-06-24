@@ -6,16 +6,15 @@ import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 import { useQueryClient } from "@tanstack/react-query"
-import { api } from "@workspace/admin-app/lib/api"
-import { useAdminModulePath } from "@workspace/admin-app/runtime"
+import { useAdminApi, useAdminModulePath } from "@workspace/admin-app/runtime"
 import type { HanetSyncAvatarsResult } from "@workspace/api-client"
 import {
   HanetAvatarCard,
   useHanetAvatarsQuery,
 } from "@workspace/admin-app/modules/hanet/_component"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
-import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
-import { useHanetStatusQuery } from "@workspace/admin-app/modules/events/_component/_query"
+import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component"
+import { readHanetAdminPlaceId } from "@workspace/admin-app/modules/hanet/_component"
+import { useHanetStatusQuery } from "@workspace/admin-app/modules/hanet/_component"
 import { useCallback, useState } from "react"
 
 export function EventHanetAvatarPanel({
@@ -23,6 +22,7 @@ export function EventHanetAvatarPanel({
 }: {
   defaultPlaceId?: string | null
 }) {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   const hanetPath = useAdminModulePath("hanet")
   const { data: hanetStatus } = useHanetStatusQuery()

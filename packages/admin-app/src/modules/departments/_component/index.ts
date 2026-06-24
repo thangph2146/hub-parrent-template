@@ -3,9 +3,9 @@ export type {
   DepartmentFormValues,
   DepartmentConfirmAction,
   DepartmentDetail,
-} from "./types"
-export { departmentFormSchema } from "./types"
-export { getDepartmentColumns } from "./columns"
+} from "./shared/types"
+export { departmentFormSchema } from "./shared/types"
+export { getDepartmentColumns } from "./_table/columns"
 export {
   useDepartmentDetailQuery,
   useDepartmentsListQuery,
@@ -25,3 +25,11 @@ export {
 export { DepartmentFormShell } from "./_form"
 export { DepartmentsConfirmDialog } from "./_alert-dialog"
 export { DepartmentsTable, DepartmentsTrashTable } from "./_table"
+export {
+  default,
+  default as DepartmentsPage,
+  DepartmentsPageInner,
+} from "./_page/departments-page"
+export { default as DepartmentsDetailPage } from "./_page/departments-detail-page"
+export { default as DepartmentsNewPage } from "./_page/departments-new-page"
+export { default as DepartmentsEditPage } from "./_page/departments-edit-page"

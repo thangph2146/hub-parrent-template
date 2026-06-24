@@ -1,5 +1,4 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
 import { useQueryClient, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk } from "@workspace/api-client"
 import type {
@@ -7,8 +6,8 @@ import type {
   UpdateGuideData,
   GuideGroup,
   ListResult,
-} from "../types"
-import { PAGE_KEY, parseContent, applyOrderToGroups } from "../utils"
+} from "../shared/types"
+import { PAGE_KEY, parseContent, applyOrderToGroups } from "../shared/utils"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 interface CreateGuideVariables {

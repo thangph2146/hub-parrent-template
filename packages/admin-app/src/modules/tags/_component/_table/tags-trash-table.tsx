@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { TagRow } from "../types"
+import type { TagRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import {
   createAdminTrashExportFetchPage,
@@ -58,6 +58,7 @@ export function TagsTrashTable({
   onBulkPurge,
   trashExportParams,
 }: TagsTrashTableProps) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<TagRow>
       tableScope="tags-trash"

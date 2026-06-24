@@ -1,8 +1,9 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { DepartmentConfirmAction, DepartmentFormValues } from "../types"
-import { departmentFormSchema } from "../types"
+import type { DepartmentConfirmAction, DepartmentFormValues } from "../shared/types"
+import { departmentFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 const EMPTY_VALUES: DepartmentFormValues = {

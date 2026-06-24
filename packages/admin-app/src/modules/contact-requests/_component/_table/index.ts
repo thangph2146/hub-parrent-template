@@ -1,2 +1,5 @@
 export * from "./contact-table"
 export * from "./contact-trash-table"
+export * from "./columns"
+export * from "./contact-row-actions"
+export * from "./contact-export"

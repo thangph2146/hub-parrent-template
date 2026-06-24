@@ -1,8 +1,9 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { MajorConfirmAction, MajorFormValues } from "../types"
-import { majorFormSchema } from "../types"
+import type { MajorConfirmAction, MajorFormValues } from "../shared/types"
+import { majorFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 const EMPTY_VALUES: MajorFormValues = { name: "", code: "", status: 1 }

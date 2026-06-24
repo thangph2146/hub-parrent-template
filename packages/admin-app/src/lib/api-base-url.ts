@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import { DEFAULT_API_URL } from "@workspace/api-client"
 
 function normalizeBasePath(raw: string | undefined): string {
@@ -47,11 +46,22 @@ function browserProxyUrl(): string {
   const basePath = normalizeBasePath(process.env.NEXT_PUBLIC_BACKEND_BASE_PATH)
   const path = `${basePath}/api`.replace(/\/{2,}/g, "/")
   const relative = path.startsWith("/") ? path : `/${path}`
-  // api-client dùng `new URL()` — cần origin tuyệt đối, không chỉ `/api`.
   return `${window.location.origin}${relative}`
 }
 
-/** URL gọi HTTP tới @api — browser dùng proxy same-origin khi bật. */
+/** URL microservice @api — không qua Next rewrites (import, socket, payload lớn). */
+export function getDirectApiBaseUrl(): string {
+  return typeof window !== "undefined"
+    ? browserDirectUrl()
+    : directConfiguredUrl()
+}
+
+/** Gốc API cho socket / webhook / uploads — không có suffix `/api`. */
+export function getApiOrigin(): string {
+  return getDirectApiBaseUrl().replace(/\/api$/i, "")
+}
+
+/** URL HTTP admin — same-origin proxy hoặc thẳng @api tùy env. */
 export function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
     if (process.env.NEXT_PUBLIC_API_PROXY === "true") {
@@ -62,7 +72,8 @@ export function getApiBaseUrl(): string {
   return directConfiguredUrl()
 }
 
-/** Origin socket.io — luôn trỏ thẳng microservice @api. */
-export function getApiSocketBaseUrl(): string {
-  return directConfiguredUrl()
-}
+/** @deprecated Dùng {@link getDirectApiBaseUrl} */
+export const getImportApiBaseUrl = getDirectApiBaseUrl
+
+/** @deprecated Dùng {@link getDirectApiBaseUrl} */
+export const getApiSocketBaseUrl = getDirectApiBaseUrl

@@ -13,8 +13,8 @@ import {
   adminTableRowSelectionProps,
   type AdminDataTableBulkAction,
 } from "@ui/components/data-table"
-import { FileStorageTabEmpty } from "../file-storage-empty"
-import type { FileStorageRow } from "../types"
+import { FileStorageTabEmpty } from "../browse/file-storage-empty"
+import type { FileStorageRow } from "../shared/types"
 
 export type FileStorageTableProps = {
   tableScope: string

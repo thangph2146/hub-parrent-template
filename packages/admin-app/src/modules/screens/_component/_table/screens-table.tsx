@@ -9,7 +9,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { ScreenRow } from "../types"
+import type { ScreenRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 export function ScreensTable({
   data,

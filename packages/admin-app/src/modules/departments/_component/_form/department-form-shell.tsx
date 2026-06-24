@@ -19,7 +19,7 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Building2, Hash } from "lucide-react"
-import type { DepartmentFormValues } from "../types"
+import type { DepartmentFormValues } from "../shared/types"
 
 export interface DepartmentFormShellProps {
   form: UseFormReturn<DepartmentFormValues>

@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -6,8 +5,8 @@ import {
 import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { CategoryDetail, CategoryRow } from "../types"
-import { normalizeCategoryRow } from "../utils"
+import type { CategoryDetail, CategoryRow } from "../shared/types"
+import { normalizeCategoryRow } from "../shared/utils"
 
 export const categoryDetailQueryKey = (categoryId: string) =>
   ["categories", "detail", categoryId] as const

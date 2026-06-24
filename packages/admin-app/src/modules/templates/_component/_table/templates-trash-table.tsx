@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { TemplateRow } from "../types"
+import type { TemplateRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import {
   createAdminTrashExportFetchPage,
@@ -56,6 +56,7 @@ export function TemplatesTrashTable({
   onBulkPurge: (rows: TemplateRow[]) => Promise<void>
   trashExportParams?: AdminTrashExportParams
 }) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<TemplateRow>
       tableScope="templates-trash"

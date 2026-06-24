@@ -25,13 +25,13 @@ import {
   resolveAdminSocketAuth,
 } from "@workspace/admin-app/lib/admin-socket"
 import { queryPrefixesForAdminResource } from "@workspace/admin-app/lib/admin-realtime-query-map"
-import { rbacQueryKeys } from "@workspace/admin-app/modules/rbac/_component/_query/rbac-query-keys"
+import { rbacQueryKeys } from "@workspace/admin-app/modules/rbac/_component"
 import { queryKeys } from "@workspace/admin-app/hooks/queries"
 import {
   dispatchHanetCheckinSyncEvent,
   HANET_CHECKINS_QUERY_KEY,
   isHanetCheckinSyncPayload,
-} from "@workspace/admin-app/lib/hanet-checkin-realtime"
+} from "@workspace/admin-app/modules/hanet/_component"
 
 function invalidateAdminPayload(
   queryClient: QueryClient,

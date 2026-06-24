@@ -4,9 +4,9 @@ export type {
   EventConfirmAction,
   EventDetail,
   EventFormSpeaker,
-} from "./types"
-export { eventFormSchema } from "./types"
-export { getEventColumns } from "./columns"
+} from "./shared/types"
+export { eventFormSchema } from "./shared/types"
+export { getEventColumns } from "./_table/columns"
 export {
   useEventDetailQuery,
   useEventsListQuery,
@@ -20,6 +20,9 @@ export {
   prefetchEventDetail,
 } from "./_query"
 export { EventLiveMonitorTab } from "./_live/event-live-monitor-tab"
+export { EventAttendanceProvider } from "./_live/event-attendance-provider"
+export { EventHanetConfigCard } from "./_live/event-hanet-config-card"
+export { EventRegistrationsLiveTable } from "./_live/event-registrations-live-table"
 export {
   useColumnFiltersChange,
   useClearListFilters,
@@ -32,4 +35,23 @@ export {
 export { EventFormShell } from "./_form"
 export { EventsConfirmDialog } from "./_alert-dialog"
 export { EventsTable, EventsTrashTable } from "./_table"
-export { EventDetailContentPanel } from "./event-detail-content-panel"
+export { EventDetailContentPanel } from "./_detail/event-detail-content-panel"
+export {
+  RegistrationAvatarCell,
+  resolveRegistrationAvatarUrl,
+} from "./_registration"
+export {
+  getPosterUrlFromValue,
+  buildPosterPayload,
+  resolveEventDetailContent,
+  uploadEventPoster,
+} from "./shared/utils"
+export { buildEventSubmitPayload } from "./shared/build-event-submit-payload"
+export {
+  default,
+  default as EventsPage,
+  EventsPageInner,
+} from "./_page/events-page"
+export { default as EventDetailPage } from "./_page/event-detail-page"
+export { default as EditEventPage } from "./_page/event-edit-page"
+export { default as NewEventPage } from "./_page/event-new-page"

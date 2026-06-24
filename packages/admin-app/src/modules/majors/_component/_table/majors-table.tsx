@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { MajorRow } from "../types"
+import type { MajorRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface MajorsTableProps {

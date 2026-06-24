@@ -1,26 +1,30 @@
-"use client"
+import { readAdminSession } from "./auth-session"
+import { getApiOrigin } from "./api-base-url"
 
-import {
-  ADMIN_SOCKET_PATH,
-  getSocketOriginFromApiBase,
-  type SocketAuthData,
-} from "@workspace/api-client/realtime"
-import { getApiSocketBaseUrl } from "@workspace/admin-app/lib/api-base-url"
-import { readAdminSession } from "@workspace/admin-app/lib/auth-session"
+export const ADMIN_SOCKET_PATH = "/api/socket"
 
-export { ADMIN_SOCKET_PATH }
-
-export function getAdminSocketOrigin(): string {
-  return getSocketOriginFromApiBase(getApiSocketBaseUrl())
+export type AdminSocketAuth = {
+  userId: string
+  role: string
 }
 
-export function resolveAdminSocketAuth(): SocketAuthData | null {
+/** Gốc socket.io — thẳng @api, không qua Next proxy. */
+export function getAdminSocketOrigin(): string {
+  return getApiOrigin()
+}
+
+/** @deprecated Dùng {@link getAdminSocketOrigin} */
+export const getSocketOrigin = getAdminSocketOrigin
+
+export function resolveSocketRole(): string {
+  const session = readAdminSession()
+  const primary = session?.roles?.[0]?.name?.trim()
+  return primary ? primary.toLowerCase() : "admin"
+}
+
+export function resolveAdminSocketAuth(): AdminSocketAuth | null {
   const session = readAdminSession()
   const userId = session?.id != null ? String(session.id) : null
   if (!userId) return null
-  const primary = session?.roles?.[0]?.name?.trim()
-  return {
-    userId,
-    role: primary ? primary.toLowerCase() : "admin",
-  }
+  return { userId, role: resolveSocketRole() }
 }

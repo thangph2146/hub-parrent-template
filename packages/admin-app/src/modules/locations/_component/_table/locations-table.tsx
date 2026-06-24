@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { LocationRow } from "../types"
+import type { LocationRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface LocationsTableProps {

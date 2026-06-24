@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { SpeakerRow } from "../types"
+import type { SpeakerRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import {
   createAdminTrashExportFetchPage,
@@ -60,6 +60,7 @@ export function SpeakersTrashTable({
   manualFiltering: manualFilteringProp,
   trashExportParams,
 }: SpeakersTrashTableProps) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<SpeakerRow>
       tableScope="speakers-trash"

@@ -1,4 +1,4 @@
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -6,8 +6,8 @@ import {
 import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { TagDetail, TagRow } from "../types"
-import { buildTagsFilterQuery, toFilterQuery } from "../utils"
+import type { TagDetail, TagRow } from "../shared/types"
+import { buildTagsFilterQuery, toFilterQuery } from "../shared/utils"
 
 export const tagDetailQueryKey = (tagId: string) =>
   ["media", "tags", "detail", tagId] as const
@@ -36,6 +36,7 @@ export function useTagsListQuery(
   enabled: boolean,
   filters?: Record<string, string>
 ): UseQueryResult<TagRow[]> {
+  const api = useAdminApi()
   return useQuery({
     queryKey: ["media", "tags", "tree", filters],
     queryFn: async (): Promise<TagRow[]> => {

@@ -10,7 +10,7 @@ const {
   verifyAdminHostLibDir,
   verifyAdminHostHooksDir,
   MAIN_LIB_SUBSTANTIVE,
-} = require("../admin/lib/admin-host-lib-rules.cjs")
+} = require("../lib/admin-host-lib-rules.cjs")
 
 const MAIN_BACKEND = path.join(ROOT, PRODUCT_LINES.main.backend.path)
 const APP_ROOT = path.join(MAIN_BACKEND, "src/app")

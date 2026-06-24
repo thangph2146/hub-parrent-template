@@ -1,7 +1,8 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { CategoryConfirmAction } from "../types"
+import type { CategoryConfirmAction } from "../shared/types"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 

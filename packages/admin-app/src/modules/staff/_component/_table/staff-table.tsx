@@ -1,4 +1,6 @@
-import { api } from "@workspace/admin-app/lib/api"
+"use client"
+
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnFiltersState,
   OnChangeFn,
@@ -8,8 +10,8 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import { getStaffColumns } from "../columns"
-import type { StaffRow } from "../types"
+import { getStaffColumns } from "./columns"
+import type { StaffRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 interface StaffTableProps {
@@ -55,6 +57,7 @@ interface StaffTableProps {
 }
 
 export function StaffTable(props: StaffTableProps) {
+  const api = useAdminApi()
   const {
     data,
     isLoading,

@@ -1,14 +1,13 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
 import { useEffect, useRef, useState } from "react"
-
-import { DEFAULT_API_URL } from "@workspace/api-client"
-
 import { io, type Socket } from "socket.io-client"
+import {
+  ADMIN_SOCKET_PATH,
+  getAdminSocketOrigin,
+  resolveAdminSocketAuth,
+} from "@workspace/admin-app/lib/admin-socket"
 
-import { readAdminSession } from "@workspace/admin-app/lib/auth-session"
-
-export const EVENT_ATTENDANCE_SOCKET_PATH = "/api/socket"
+export const EVENT_ATTENDANCE_SOCKET_PATH = ADMIN_SOCKET_PATH
 
 export type EventAttendanceSocketPayload = {
   kind: "checkin" | "checkout"
@@ -66,24 +65,6 @@ export type EventHanetSyncSocketPayload = {
   error?: string
 }
 
-function getSocketOrigin(): string {
-  const api = (process.env.NEXT_PUBLIC_API_URL ?? DEFAULT_API_URL).replace(
-    /\/$/,
-
-    ""
-  )
-
-  return api.replace(/\/api$/i, "")
-}
-
-function resolveSocketRole(): string {
-  const session = readAdminSession()
-
-  const primary = session?.roles?.[0]?.name?.trim()
-
-  return primary ? primary.toLowerCase() : "admin"
-}
-
 const POLL_WHEN_DISCONNECTED_MS = 5_000
 
 const POLL_WHEN_CONNECTED_MS = 45_000
@@ -127,11 +108,8 @@ export function useEventAttendanceSocket(
       return
     }
 
-    const session = readAdminSession()
-
-    const userId = session?.id != null ? String(session.id) : null
-
-    if (!userId) {
+    const auth = resolveAdminSocketAuth()
+    if (!auth) {
       setConnected(false)
 
       setSocketError(true)
@@ -141,7 +119,7 @@ export function useEventAttendanceSocket(
 
     let disposed = false
 
-    const socket = io(getSocketOrigin(), {
+    const socket = io(getAdminSocketOrigin(), {
       path: EVENT_ATTENDANCE_SOCKET_PATH,
 
       transports: ["polling", "websocket"],
@@ -152,11 +130,7 @@ export function useEventAttendanceSocket(
 
       withCredentials: true,
 
-      auth: {
-        userId,
-
-        role: resolveSocketRole(),
-      },
+      auth,
     })
 
     socketRef.current = socket

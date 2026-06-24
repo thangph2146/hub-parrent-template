@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import { useMemo } from "react"
 import {
   FieldError,
@@ -19,8 +19,8 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Hash, Camera, Link2 } from "lucide-react"
-import { useEventsListQuery } from "@workspace/admin-app/modules/events/_component/_query"
-import type { CameraFormValues } from "../types"
+import { useEventsListQuery } from "@workspace/admin-app/modules/events/_component"
+import type { CameraFormValues } from "../shared/types"
 
 export interface CameraFormShellProps {
   form: UseFormReturn<CameraFormValues>
@@ -39,6 +39,7 @@ export function CameraFormShell({
   onBack,
   onReset,
 }: CameraFormShellProps) {
+  const api = useAdminApi()
   const { control } = form
   const { data: events } = useEventsListQuery(api, true)
   const eventOptions = useMemo(

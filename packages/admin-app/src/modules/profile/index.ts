@@ -3,7 +3,7 @@ export {
   AdminProfilePageInner,
   default,
   type AdminProfilePageConfig,
-} from "./_component/admin-profile-page"
+} from "./_component"
 export { MAIN_ADMIN_PROFILE_CONFIG } from "./_config/profile-page.main-config"
 export { CHECKIN_STUDENT_PROFILE_CONFIG } from "./_config/profile-page.checkin-config"
 export {

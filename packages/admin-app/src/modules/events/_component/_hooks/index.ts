@@ -4,11 +4,11 @@ import {
   useClearTrashFilters,
 } from "@workspace/admin-app/hooks/use-table-filters"
 import {
-  buildEventPayload,
   useEventForm,
   useHandleConfirmAction,
   useConfirmAction,
 } from "./use-events-actions"
+import { buildEventPayload } from "../shared/build-event-payload"
 
 export {
   useColumnFiltersChange,

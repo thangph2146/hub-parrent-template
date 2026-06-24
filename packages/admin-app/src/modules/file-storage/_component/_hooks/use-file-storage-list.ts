@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react"
 import { toast } from "@ui/components/sonner"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import { fetchImages } from "@workspace/admin-app/lib/admin-uploads"
-import type { FileStorageRow, StorageRealm, StorageTab } from "../types"
+import type { FileStorageRow, StorageRealm, StorageTab } from "../shared/types"
 
 export function useFileStorageList(
   activeRealm: StorageRealm,
@@ -13,6 +14,7 @@ export function useFileStorageList(
   includeDescendants = false,
   uploadOwnerFilter = ""
 ) {
+  const api = useAdminApi()
   const [rows, setRows] = useState<FileStorageRow[]>([])
   const [realms, setRealms] = useState<StorageTab[]>([])
   const [childFolders, setChildFolders] = useState<StorageTab[]>([])
@@ -26,7 +28,7 @@ export function useFileStorageList(
   const reload = useCallback(async () => {
     setIsFetching(true)
     try {
-      const data = await fetchImages(page, pageSize, {
+      const data = await fetchImages(api, page, pageSize, {
         realm: activeRealm,
         folderPath: activeFolderPath || undefined,
         includeDescendants,
@@ -50,6 +52,7 @@ export function useFileStorageList(
     page,
     pageSize,
     uploadOwnerFilter,
+    api,
   ])
 
   useEffect(() => {

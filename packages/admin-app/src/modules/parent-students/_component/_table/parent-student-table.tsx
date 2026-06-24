@@ -11,8 +11,9 @@ import {
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
-import { api } from "@workspace/admin-app/lib/api"
-import type { ParentStudent } from "../types"
+import { useAdminApi } from "@workspace/admin-app/runtime"
+
+import type { ParentStudent } from "../shared/types"
 
 export interface ParentStudentTableProps {
   data: ParentStudent[]
@@ -63,6 +64,7 @@ export function ParentStudentTable({
   canApprove,
   listQuery,
 }: ParentStudentTableProps) {
+  const api = useAdminApi()
   const xlsxBase = buildAdminTableXlsxExport("parent-students", {
     pageCount: data.length,
     total,

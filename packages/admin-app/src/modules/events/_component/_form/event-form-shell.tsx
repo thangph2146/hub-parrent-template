@@ -42,14 +42,15 @@ import {
   Star,
 } from "lucide-react"
 import { slugify } from "@workspace/api-client"
-import { readHanetAdminPlaceId } from "@workspace/admin-app/lib/hanet-place-storage"
-import { HanetPlaceSelect } from "@workspace/admin-app/modules/hanet/_component/hanet-place-select"
-import { useHanetDevicesQuery } from "@workspace/admin-app/modules/hanet/_component/use-hanet-devices-query"
-import { useHanetStatusQuery } from "../_query/use-hanet-status"
-import type { EventFormValues, EventFormSpeaker } from "../types"
+import { readHanetAdminPlaceId } from "@workspace/admin-app/modules/hanet/_component"
+import {
+  HanetPlaceSelect,
+  useHanetDevicesQuery,
+} from "@workspace/admin-app/modules/hanet/_component"
+import { useHanetStatusQuery } from "@workspace/admin-app/modules/hanet/_component"
+import type { EventFormValues, EventFormSpeaker } from "../shared/types"
 import { EventPosterField } from "./event-poster-field"
-import { api } from "@workspace/admin-app/lib/api"
-import { useAdminModulePath } from "@workspace/admin-app/runtime"
+import { useAdminApi, useAdminModulePath } from "@workspace/admin-app/runtime"
 
 interface LocationOption {
   value: string
@@ -67,6 +68,7 @@ export interface EventFormShellProps {
 }
 
 function useLocationOptions() {
+  const api = useAdminApi()
   const [options, setOptions] = useState<LocationOption[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -90,12 +92,13 @@ function useLocationOptions() {
       })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [])
+  }, [api])
 
   return { options, loading }
 }
 
 function SpeakerSelector({ form }: { form: EventFormShellProps["form"] }) {
+  const api = useAdminApi()
   const [options, setOptions] = useState<TreeOption[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -118,7 +121,7 @@ function SpeakerSelector({ form }: { form: EventFormShellProps["form"] }) {
       })
       .catch(() => {})
       .finally(() => setLoading(false))
-  }, [])
+  }, [api])
 
   const optionMap = new Map(options.map((o) => [o.value, o.label]))
   const [uiSpeakers, setUiSpeakers] = useState<EventFormSpeaker[]>(

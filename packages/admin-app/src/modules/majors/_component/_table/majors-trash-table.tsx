@@ -1,4 +1,5 @@
 "use client"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 
 import type {
   ColumnDef,
@@ -10,9 +11,8 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { MajorRow } from "../types"
+import type { MajorRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
-import { api } from "@workspace/admin-app/lib/api"
 import {
   createAdminTrashExportFetchPage,
   type AdminTrashExportParams,
@@ -59,6 +59,7 @@ export function MajorsTrashTable({
   onBulkPurge,
   trashExportParams,
 }: MajorsTrashTableProps) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<MajorRow>
       tableScope="majors-trash"

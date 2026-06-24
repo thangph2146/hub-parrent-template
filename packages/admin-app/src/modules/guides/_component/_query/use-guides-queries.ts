@@ -1,5 +1,4 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -7,8 +6,8 @@ import {
 import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk } from "@workspace/api-client"
-import type { GuideGroup, ListResult } from "../types"
-import { PAGE_KEY } from "../utils"
+import type { GuideGroup, ListResult } from "../shared/types"
+import { PAGE_KEY } from "../shared/utils"
 
 export interface UseGuidesQueryProps {
   api: StoreSyncSdk

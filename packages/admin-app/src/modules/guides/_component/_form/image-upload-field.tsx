@@ -6,6 +6,7 @@ import { Loader2, ImagePlus, X } from "lucide-react"
 import { Input } from "@ui/components/input"
 import { Label } from "@ui/components/label"
 import { uploadAdminImage } from "@workspace/admin-app/lib/admin-upload"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 
 interface ImageUploadFieldProps {
   value: string
@@ -13,13 +14,14 @@ interface ImageUploadFieldProps {
 }
 
 export function ImageUploadField({ value, onChange }: ImageUploadFieldProps) {
+  const api = useAdminApi()
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
 
   const handleFile = async (file: File) => {
     setUploading(true)
     try {
-      const url = await uploadAdminImage(file, { folderPath: "guides" })
+      const url = await uploadAdminImage(api, file, { folderPath: "guides" })
       onChange(url)
     } catch {
       toast.error("Upload ảnh thất bại")

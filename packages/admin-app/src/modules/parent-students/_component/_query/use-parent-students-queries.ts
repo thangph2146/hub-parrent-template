@@ -1,11 +1,13 @@
 "use client"
 
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import { useQueryClient } from "@tanstack/react-query"
-import { api } from "@workspace/admin-app/lib/api"
+
 import { queryKeys } from "@workspace/admin-app/hooks/queries"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 export function useReviewParentStudentMutation(onSuccess?: () => void) {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
 
   return useAdminMutation({

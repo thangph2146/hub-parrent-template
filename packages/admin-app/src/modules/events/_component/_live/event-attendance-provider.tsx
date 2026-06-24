@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import {
   createContext,
   useCallback,
@@ -16,7 +16,7 @@ import {
   useEventAttendanceSocket,
 } from "./use-event-attendance-socket"
 import { useEventHanetReconcile } from "./use-event-hanet-reconcile"
-import { useHanetStatusQuery } from "../_query/use-hanet-status"
+import { useHanetStatusQuery } from "@workspace/admin-app/modules/hanet/_component"
 import type {
   EventAttendanceSocketPayload,
   EventHanetSyncSocketPayload,
@@ -49,6 +49,7 @@ export function EventAttendanceProvider({
   enabled?: boolean
   children: ReactNode
 }) {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   const [liveRevision, setLiveRevision] = useState(0)
   const [lastPayload, setLastPayload] =

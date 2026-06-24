@@ -18,7 +18,7 @@ import { DatePicker, TreePicker } from "@ui/components/pickers"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { CalendarDays, Hash } from "lucide-react"
-import type { AcademicYearFormValues } from "../types"
+import type { AcademicYearFormValues } from "../shared/types"
 
 export interface AcademicYearFormShellProps {
   form: UseFormReturn<AcademicYearFormValues>

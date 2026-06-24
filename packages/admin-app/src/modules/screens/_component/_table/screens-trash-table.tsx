@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { ScreenRow } from "../types"
+import type { ScreenRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import {
   createAdminTrashExportFetchPage,
@@ -56,6 +56,7 @@ export function ScreensTrashTable({
   onBulkPurge: (rows: ScreenRow[]) => Promise<void>
   trashExportParams?: AdminTrashExportParams
 }) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<ScreenRow>
       tableScope="screens-trash"

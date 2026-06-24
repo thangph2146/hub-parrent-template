@@ -1,7 +1,7 @@
 "use client"
 
 import { useQueryClient, type UseMutationResult } from "@tanstack/react-query"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ContactRequest,
   CreateContactRequestInput,
@@ -9,11 +9,13 @@ import type {
 } from "@workspace/api-client"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
+
 export const useCreateContactRequest = (): UseMutationResult<
   ContactRequest,
   Error,
   CreateContactRequestInput
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -35,6 +37,7 @@ export const useUpdateContactRequest = (): UseMutationResult<
   Error,
   { id: string | number; input: UpdateContactRequestInput }
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -59,6 +62,7 @@ export const useDeleteContactRequest = (): UseMutationResult<
   Error,
   string | number
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -80,6 +84,7 @@ export const useRestoreContactRequest = (): UseMutationResult<
   Error,
   string | number
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -101,6 +106,7 @@ export const usePurgeContactRequest = (): UseMutationResult<
   Error,
   string | number
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -123,6 +129,7 @@ export const useBulkDeleteContactRequest = (): UseMutationResult<
   Error,
   string[]
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -144,6 +151,7 @@ export const useBulkRestoreContactRequest = (): UseMutationResult<
   Error,
   string[]
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {
@@ -166,6 +174,7 @@ export const useBulkPurgeContactRequest = (): UseMutationResult<
   Error,
   string[]
 > => {
+  const api = useAdminApi()
   const queryClient = useQueryClient()
   return useAdminMutation({
     toast: {

@@ -21,9 +21,9 @@ import {
 import {
   buildHanetWebhookAutoUrl,
   buildHanetWebhookUrl,
-} from "@workspace/admin-app/lib/hanet-webhook-url"
+} from "@workspace/admin-app/modules/hanet/_component"
 import { useAdminModulePath } from "@workspace/admin-app/runtime"
-import { useHanetStatusQuery } from "../_query/use-hanet-status"
+import { useHanetStatusQuery } from "@workspace/admin-app/modules/hanet/_component"
 
 export type EventHanetCameraInfo = {
   checkinCameraName: string | null

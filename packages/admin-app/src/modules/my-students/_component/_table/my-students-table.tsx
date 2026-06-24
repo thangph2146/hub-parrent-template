@@ -4,8 +4,8 @@ import type { ColumnDef, OnChangeFn } from "@tanstack/react-table"
 import type { ColumnFiltersState } from "@tanstack/react-table"
 import { AdminDataTable } from "@ui/components/data-table"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
-import type { MyStudentRow } from "../types"
-import { getMyStudentGlobalFilterText } from "../columns"
+import type { MyStudentRow } from "../shared/types"
+import { getMyStudentGlobalFilterText } from "../_table/columns"
 
 export interface MyStudentsTableProps {
   data: MyStudentRow[]

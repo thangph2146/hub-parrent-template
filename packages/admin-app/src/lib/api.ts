@@ -55,3 +55,5 @@ export type {
   UpdateParentStudentInput,
 } from "@workspace/api-client"
 export { ApiError, createStoreSyncSdk }
+export { createAdminSdk, resolveImportApi } from "./create-admin-sdk"
+export type { CreateAdminSdkOptions } from "./create-admin-sdk"

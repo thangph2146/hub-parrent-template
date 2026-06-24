@@ -62,11 +62,15 @@ export type DatabaseSchemaResponse = {
 
 export type ImportConfigResponse = {
   modelOrder: string[];
+  /** modelName (camelCase) → tableName (JSON export key, e.g. post → posts). */
+  modelTableNames?: Record<string, string>;
   bundles: Record<string, readonly string[]>;
   rowChunkSize: number;
   modelChunkSizes?: Record<string, number>;
   parallelChunkConcurrency?: number;
   modelParallelConcurrency?: Record<string, number>;
+  /** Giới hạn bytes/lô HTTP cho post (Lexical JSON nặng). */
+  postPayloadChunkBytes?: number;
   reference?: {
     source: string;
     exportedAt: string;

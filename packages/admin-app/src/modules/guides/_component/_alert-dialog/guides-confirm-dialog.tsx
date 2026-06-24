@@ -2,7 +2,7 @@
 
 import { Trash2 } from "lucide-react"
 import { AdminConfirmActionDialog } from "@ui/components/admin"
-import type { GuideConfirmAction } from "../types"
+import type { GuideConfirmAction } from "../shared/types"
 
 export interface GuidesConfirmDialogProps {
   confirmAction: GuideConfirmAction | null

@@ -11,9 +11,9 @@ import { useDebouncedValue } from "@workspace/admin-app/hooks/use-debounced-valu
 import {
   deriveFolderNavSearchState,
   diskPathToNavPath,
-} from "../folder-domain"
-import type { StorageRealm } from "../types"
-import { filterStorageFoldersByQuery } from "../utils"
+} from "../shared/folder-domain"
+import type { StorageRealm } from "../shared/types"
+import { filterStorageFoldersByQuery } from "../shared/utils"
 import { useStorageFolders } from "./use-storage-folders"
 
 export const FOLDER_SEARCH_DEBOUNCE_MS = 300

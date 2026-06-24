@@ -1,7 +1,8 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
-import type { CameraConfirmAction, CameraFormValues } from "../types"
-import { cameraFormSchema } from "../types"
+import type { CameraConfirmAction, CameraFormValues } from "../shared/types"
+import { cameraFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 const EMPTY: CameraFormValues = {
   name: "",

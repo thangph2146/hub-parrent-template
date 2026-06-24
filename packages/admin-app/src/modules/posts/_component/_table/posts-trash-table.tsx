@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { PostListRow } from "../types"
+import type { PostListRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface PostsTrashTableProps {
@@ -63,6 +63,7 @@ export function PostsTrashTable({
   canDelete,
   listQuery,
 }: PostsTrashTableProps) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<PostListRow>
       tableScope="posts-trash"

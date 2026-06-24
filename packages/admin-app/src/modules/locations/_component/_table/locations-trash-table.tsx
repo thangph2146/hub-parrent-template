@@ -1,5 +1,5 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -10,7 +10,7 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { LocationRow } from "../types"
+import type { LocationRow } from "../shared/types"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 import {
   createAdminTrashExportFetchPage,
@@ -58,6 +58,7 @@ export function LocationsTrashTable({
   onBulkPurge,
   trashExportParams,
 }: LocationsTrashTableProps) {
+  const api = useAdminApi()
   return (
     <AdminDataTable<LocationRow>
       tableScope="locations-trash"

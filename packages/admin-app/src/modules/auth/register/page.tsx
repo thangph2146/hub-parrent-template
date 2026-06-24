@@ -1,5 +1,1 @@
-import { RegisterForm } from "../_component/register-form"
-
-export default function AdminRegisterPage() {
-  return <RegisterForm />
-}
+export { RegisterForm as default } from "../_component"

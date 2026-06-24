@@ -6,7 +6,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@workspace/admin-app/lib/fetch-all-admin-list"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { AcademicYearDetail, AcademicYearRow } from "../types"
+import type { AcademicYearDetail, AcademicYearRow } from "../shared/types"
 
 export const academicYearDetailQueryKey = (id: string) =>
   ["academic-years", "detail", id] as const

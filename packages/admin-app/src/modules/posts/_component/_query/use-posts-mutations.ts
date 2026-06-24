@@ -1,8 +1,7 @@
-import { api } from "@workspace/admin-app/lib/api"
 import type { UseMutationResult } from "@tanstack/react-query"
 
 import type { StoreSyncSdk } from "@workspace/api-client"
-import type { PostListRow } from "../types"
+import type { PostListRow } from "../shared/types"
 
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 export interface UsePostsMutationsProps {

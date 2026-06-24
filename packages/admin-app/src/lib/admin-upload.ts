@@ -1,7 +1,9 @@
 import type { AdminUploadOptions } from "@ui/components/admin"
-import { api } from "@workspace/admin-app/lib/api"
-/** Upload ảnh admin — phiên qua SDK (`X-User-Id` từ `lib/api.ts`). */
+import type { StoreSyncSdk } from "@workspace/api-client"
+
+/** Upload ảnh admin — SDK inject từ `useAdminApi()`. */
 export async function uploadAdminImage(
+  api: StoreSyncSdk,
   file: File,
   options: AdminUploadOptions
 ): Promise<string> {

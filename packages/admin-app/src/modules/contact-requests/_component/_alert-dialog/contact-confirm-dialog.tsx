@@ -1,7 +1,7 @@
 import { Archive, ArchiveRestore, Trash2 } from "lucide-react"
 import { AdminConfirmActionDialog } from "@ui/components/admin"
 import { ADMIN_ALERT_DIALOG_CONTENT_CLASS } from "@ui/lib/layout-shell"
-import type { ContactRequest } from "../types"
+import type { ContactRequest } from "../shared/types"
 
 interface ContactConfirmDialogProps {
   open: boolean

@@ -22,7 +22,7 @@ import {
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Hash, Monitor } from "lucide-react"
-import type { ScreenFormValues } from "../types"
+import type { ScreenFormValues } from "../shared/types"
 
 export interface ScreenFormShellProps {
   form: UseFormReturn<ScreenFormValues>

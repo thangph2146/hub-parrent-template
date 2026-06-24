@@ -3,9 +3,9 @@ export type {
   TrainingSystemFormValues,
   TrainingSystemConfirmAction,
   TrainingSystemDetail,
-} from "./types"
-export { entityFormSchema } from "./types"
-export { getTrainingSystemColumns } from "./columns"
+} from "./shared/types"
+export { entityFormSchema } from "./shared/types"
+export { getTrainingSystemColumns } from "./_table/columns"
 export {
   useTrainingSystemDetailQuery,
   useTrainingSystemsListQuery,
@@ -25,3 +25,11 @@ export {
 export { TrainingSystemFormShell } from "./_form"
 export { TrainingSystemsConfirmDialog } from "./_alert-dialog"
 export { TrainingSystemsTable, TrainingSystemsTrashTable } from "./_table"
+export {
+  default,
+  default as TrainingSystemsPage,
+  TrainingSystemsPageInner,
+} from "./_page/training-systems-page"
+export { default as TrainingSystemsDetailPage } from "./_page/training-systems-detail-page"
+export { default as TrainingSystemsNewPage } from "./_page/training-systems-new-page"
+export { default as TrainingSystemsEditPage } from "./_page/training-systems-edit-page"

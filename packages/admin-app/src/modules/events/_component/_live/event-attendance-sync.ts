@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query"
-import type { EventDetail } from "../types"
+import type { EventDetail } from "../shared/types"
 import { patchRegistrationAttendanceCache } from "./patch-registration-attendance-cache"
 import type { EventAttendanceSocketPayload } from "./use-event-attendance-socket"
 

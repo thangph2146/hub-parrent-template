@@ -36,7 +36,7 @@ import {
   permissionGroupKey,
   permissionGroupLabelVi,
   permissionLabelVi,
-} from "@workspace/admin-app/lib/permission-labels"
+} from "../shared/permission-labels"
 
 export interface RoleFormShellProps {
   isEdit: boolean

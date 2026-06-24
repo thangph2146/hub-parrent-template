@@ -6,7 +6,7 @@ import {
 } from "@workspace/admin-app/lib/admin-detail-query"
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk, PagedResult } from "@workspace/api-client"
-import type { CourseDetail, CourseRow } from "../types"
+import type { CourseDetail, CourseRow } from "../shared/types"
 
 export const courseDetailQueryKey = (id: string) =>
   ["courses", "detail", id] as const

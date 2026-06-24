@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import type {
   ImportArchiveResult,
   ListImagesData,
@@ -11,6 +10,7 @@ import type {
   CreateStorageFolderResult,
   ReorganizeDateFoldersResult,
   BulkMoveFilesResult,
+  StoreSyncSdk,
 } from "@workspace/api-client"
 import { fetchAllAdminList } from "./fetch-all-admin-list"
 
@@ -31,27 +31,36 @@ export type {
 /** Tab = folder hệ thống (admincp, avatars, files, …). */
 export type FileStorageTabId = string
 
-export async function fetchStorageFolders(): Promise<FolderItem[]> {
+export async function fetchStorageFolders(
+  api: StoreSyncSdk
+): Promise<FolderItem[]> {
   return api.uploads.listFolders()
 }
 
-export async function reorganizeDateStorageFolders(options?: {
-  scopePath?: string
-  dryRun?: boolean
-}): Promise<ReorganizeDateFoldersResult> {
+export async function reorganizeDateStorageFolders(
+  api: StoreSyncSdk,
+  options?: {
+    scopePath?: string
+    dryRun?: boolean
+  }
+): Promise<ReorganizeDateFoldersResult> {
   return api.uploads.reorganizeDateFolders(options)
 }
 
-export async function createStorageFolder(options: {
-  folderName: string
-  parentPath?: string
-  resourceType?: "images" | "files" | "videos" | "audio"
-  allowedExtensions?: string[]
-}): Promise<CreateStorageFolderResult> {
+export async function createStorageFolder(
+  api: StoreSyncSdk,
+  options: {
+    folderName: string
+    parentPath?: string
+    resourceType?: "images" | "files" | "videos" | "audio"
+    allowedExtensions?: string[]
+  }
+): Promise<CreateStorageFolderResult> {
   return api.uploads.createFolder(options)
 }
 
 export async function fetchImages(
+  api: StoreSyncSdk,
   page: number,
   limit: number,
   options?: {
@@ -70,36 +79,43 @@ export async function fetchImages(
   })
 }
 
-export async function deleteStorageFolder(path: string): Promise<void> {
+export async function deleteStorageFolder(
+  api: StoreSyncSdk,
+  path: string
+): Promise<void> {
   return api.uploads.deleteFolder(path)
 }
 
 export async function bulkMoveStorageFiles(
+  api: StoreSyncSdk,
   paths: string[],
   destinationFolder: string
 ): Promise<BulkMoveFilesResult> {
   return api.uploads.bulkMoveFiles(paths, destinationFolder)
 }
 
-export async function deleteUploadedFile(relativePath: string): Promise<void> {
+export async function deleteUploadedFile(
+  api: StoreSyncSdk,
+  relativePath: string
+): Promise<void> {
   await api.uploads.remove(relativePath)
 }
 
-/** Xóa hàng loạt qua một request API (giống batch delete của Google Drive). */
 export async function deleteUploadedFilesBulk(
+  api: StoreSyncSdk,
   paths: string[]
 ): Promise<UploadsBulkDeleteResult> {
   return api.uploads.bulkRemove(paths)
 }
 
-/** Lấy toàn bộ file trong tab (images / files), không chỉ trang hiện tại. */
 export async function fetchAllFileStorageRows(
+  api: StoreSyncSdk,
   realm: StorageRealm,
   tab?: FileStorageTabId,
   options?: { includeDescendants?: boolean; uploadOwnerId?: string }
 ): Promise<ImageItem[]> {
   return fetchAllAdminList(async ({ page, limit }) => {
-    const data = await fetchImages(page, limit, {
+    const data = await fetchImages(api, page, limit, {
       realm,
       folderPath: tab,
       includeDescendants: options?.includeDescendants,
@@ -109,27 +125,24 @@ export async function fetchAllFileStorageRows(
   })
 }
 
-/**
- * Lấy toàn bộ file trong kho lưu trữ (images/, files/, thư mục legacy).
- * Giữ nguyên relativePath như trên disk — dùng khi nén ZIP theo cấu trúc thư mục.
- */
-export async function fetchAllStoredFileStorageRows(): Promise<ImageItem[]> {
+export async function fetchAllStoredFileStorageRows(
+  api: StoreSyncSdk
+): Promise<ImageItem[]> {
   return fetchAllAdminList(async ({ page, limit }) => {
-    const data = await fetchImages(page, limit, {})
+    const data = await fetchImages(api, page, limit, {})
     return { items: data.data, total: data.pagination.total }
   })
 }
 
-/** Xuất ZIP toàn bộ kho lưu trữ (server quét disk — lấy hết file). */
-export async function exportFileStorageArchive(): Promise<{
+export async function exportFileStorageArchive(api: StoreSyncSdk): Promise<{
   blob: Blob
   meta: { fileCount: number; skipped: number }
 }> {
   return api.uploads.exportArchive()
 }
 
-/** Khôi phục kho lưu trữ từ file ZIP backup. */
 export async function importFileStorageArchive(
+  api: StoreSyncSdk,
   file: File,
   options?: { overwrite?: boolean }
 ): Promise<ImportArchiveResult> {

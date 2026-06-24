@@ -3,9 +3,9 @@ export type {
   AcademicYearFormValues,
   AcademicYearConfirmAction,
   AcademicYearDetail,
-} from "./types"
-export { academicYearFormSchema } from "./types"
-export { getAcademicYearColumns } from "./columns"
+} from "./shared/types"
+export { academicYearFormSchema } from "./shared/types"
+export { getAcademicYearColumns } from "./_table/columns"
 export {
   useAcademicYearDetailQuery,
   useAcademicYearsListQuery,
@@ -25,3 +25,11 @@ export {
 export { AcademicYearFormShell } from "./_form"
 export { AcademicYearsConfirmDialog } from "./_alert-dialog"
 export { AcademicYearsTable, AcademicYearsTrashTable } from "./_table"
+export {
+  default,
+  default as AcademicYearsPage,
+  AcademicYearsPageInner,
+} from "./_page/academic-years-page"
+export { default as AcademicYearsDetailPage } from "./_page/academic-years-detail-page"
+export { default as AcademicYearsNewPage } from "./_page/academic-years-new-page"
+export { default as AcademicYearsEditPage } from "./_page/academic-years-edit-page"

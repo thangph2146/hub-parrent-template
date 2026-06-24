@@ -1,3 +1,5 @@
+"use client"
+
 import type {
   ColumnFiltersState,
   RowSelectionState,
@@ -11,11 +13,11 @@ import {
 
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
-import { api } from "@workspace/admin-app/lib/api"
+import { useAdminApi } from "@workspace/admin-app/runtime"
 
-import { getContactRequestColumns } from "../columns"
+import { getContactRequestColumns } from "./columns"
 
-import type { ContactRequest } from "../types"
+import type { ContactRequest } from "../shared/types"
 
 interface ContactRequestTableProps {
   data: ContactRequest[]
@@ -89,6 +91,7 @@ interface ContactRequestTableProps {
 }
 
 export function ContactRequestTable(props: ContactRequestTableProps) {
+  const api = useAdminApi()
   const {
     data,
 

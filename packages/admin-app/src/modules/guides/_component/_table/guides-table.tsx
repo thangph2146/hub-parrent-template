@@ -12,8 +12,8 @@ import {
   AdminDataTable,
   adminTableRowSelectionProps,
 } from "@ui/components/data-table"
-import type { GuideGroup } from "../types"
-import { applyOrderToGroups } from "../utils"
+import type { GuideGroup } from "../shared/types"
+import { applyOrderToGroups } from "../shared/utils"
 import { buildAdminTableXlsxExport } from "@ui/components/admin"
 
 export interface GuidesTableProps {

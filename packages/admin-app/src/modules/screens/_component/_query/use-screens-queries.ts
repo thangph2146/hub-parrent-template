@@ -1,4 +1,3 @@
-import { api } from "@workspace/admin-app/lib/api"
 import {
   adminDetailQueryOptions,
   prefetchAdminDetailQuery,
@@ -6,7 +5,7 @@ import {
 import { useQuery, type QueryClient } from "@tanstack/react-query"
 import { ADMIN_LIST_EXPORT_FETCH_LIMIT } from "@workspace/admin-app/lib/fetch-all-admin-list"
 import type { StoreSyncSdk } from "@workspace/api-client"
-import type { ScreenDetail, ScreenRow } from "../types"
+import type { ScreenDetail, ScreenRow } from "../shared/types"
 
 export const screenDetailQueryKey = (id: string) =>
   ["screens", "detail", id] as const

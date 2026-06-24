@@ -8,7 +8,7 @@ import {
   computeMyRegisteredEventStats,
   fetchMyRegisteredEvents,
   type MyRegisteredEvent,
-} from "../../_lib/my-registered-events"
+} from "../shared/my-registered-events"
 
 export function useMyRegisteredEvents() {
   const api = useAdminApi()

@@ -1,10 +1,10 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
+
+import { useEffect } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Loader2, Plus } from "lucide-react"
-import { toast } from "@ui/components/sonner"
 import { Button } from "@ui/components/button"
 import { Checkbox } from "@ui/components/checkbox"
 import {
@@ -21,7 +21,10 @@ import { ScrollArea } from "@ui/components/scroll-area"
 import { Textarea } from "@ui/components/textarea"
 import { FieldError } from "@ui/components/field"
 import type { RbacPermission } from "@workspace/api-client"
-import type { CreateRoleInput, UpdateRoleInput } from "../types"
+import {
+  useCreateRoleMutation,
+  useUpdateRoleMutation,
+} from "../_query/use-rbac-queries"
 
 const schema = z.object({
   code: z
@@ -56,6 +59,9 @@ export function RoleDialog({
   permissions,
 }: RoleDialogProps) {
   const isEdit = !!role
+  const createMutation = useCreateRoleMutation()
+  const updateMutation = useUpdateRoleMutation()
+  const busy = createMutation.isPending || updateMutation.isPending
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -68,36 +74,39 @@ export function RoleDialog({
     },
   })
 
+  useEffect(() => {
+    if (!open) return
+    form.reset({
+      code: role?.code || "",
+      name: role?.name || "",
+      displayName: role?.name || "",
+      description: role?.description || "",
+      permissionCodes: role?.permissions || [],
+    })
+  }, [open, role, form])
+
   const handleSubmit = async (data: FormData) => {
-    try {
-      if (isEdit && role) {
-        const updateData: UpdateRoleInput = {
+    if (isEdit && role) {
+      await updateMutation.mutateAsync({
+        id: String(role.id),
+        data: {
+          code: role.code,
           name: data.name,
           displayName: data.displayName,
           description: data.description,
           permissionCodes: data.permissionCodes,
-        }
-        // TODO: Implement API call when endpoint is available
-        // await api.rbac.updateRole(role.id, updateData);
-        console.log("Update role:", role.id, updateData)
-        toast.success("Đã cập nhật vai trò thành công")
-      } else {
-        const createData: CreateRoleInput = {
-          code: data.code,
-          name: data.name,
-          displayName: data.displayName,
-          description: data.description,
-          permissionCodes: data.permissionCodes,
-        }
-        // TODO: Implement API call when endpoint is available
-        // await api.rbac.createRole(createData);
-        console.log("Create role:", createData)
-        toast.success("Đã tạo vai trò thành công")
-      }
-      onClose()
-    } catch {
-      /* toast: MutationCache */
+        },
+      })
+    } else {
+      await createMutation.mutateAsync({
+        code: data.code,
+        name: data.name,
+        displayName: data.displayName,
+        description: data.description,
+        permissionCodes: data.permissionCodes,
+      })
     }
+    onClose()
   }
 
   return (
@@ -229,8 +238,8 @@ export function RoleDialog({
             <Button type="button" variant="outline" onClick={onClose}>
               Hủy
             </Button>
-            <Button type="submit" disabled={form.formState.isSubmitting}>
-              {form.formState.isSubmitting ? (
+            <Button type="submit" disabled={busy}>
+              {busy ? (
                 <>
                   <Loader2 className="mr-2 size-4 animate-spin" />
                   Đang lưu...

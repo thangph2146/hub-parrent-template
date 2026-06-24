@@ -22,7 +22,8 @@ import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Camera, Hash, Loader2, User } from "lucide-react"
 import { formatPersonInitials } from "@workspace/admin-app/lib/format-person-initials"
-import type { SpeakerFormValues } from "../types"
+import { useAdminApi } from "@workspace/admin-app/runtime"
+import type { SpeakerFormValues } from "../shared/types"
 import Image from "next/image"
 
 export interface SpeakerFormShellProps {
@@ -42,6 +43,7 @@ export function SpeakerFormShell({
   onBack,
   onReset,
 }: SpeakerFormShellProps) {
+  const api = useAdminApi()
   const { control, watch, setValue } = form
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const avatarInputRef = useRef<HTMLInputElement>(null)
@@ -53,7 +55,7 @@ export function SpeakerFormShell({
     setUploadingAvatar(true)
     try {
       const { uploadAdminImage } = await import("@workspace/admin-app/lib/admin-upload")
-      const url = await uploadAdminImage(file, { folderPath: "avatars" })
+      const url = await uploadAdminImage(api, file, { folderPath: "avatars" })
       setValue("avatar", url)
       toast.success("Đã tải ảnh đại diện")
     } catch (e) {

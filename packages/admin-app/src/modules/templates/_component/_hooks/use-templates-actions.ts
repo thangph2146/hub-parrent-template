@@ -1,7 +1,8 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
-import type { TemplateConfirmAction, TemplateFormValues } from "../types"
-import { templateFormSchema } from "../types"
+import type { TemplateConfirmAction, TemplateFormValues } from "../shared/types"
+import { templateFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 const EMPTY: TemplateFormValues = { name: "", code: "", status: 1 }
 export function buildTemplatePayload(v: TemplateFormValues) {

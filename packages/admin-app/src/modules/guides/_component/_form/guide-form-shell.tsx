@@ -22,7 +22,7 @@ import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { BookOpen, Layers, ListOrdered } from "lucide-react"
 import { StepEditor } from "./step-editor"
-import type { GuideFormData } from "../types"
+import type { GuideFormData } from "../shared/types"
 
 export interface GuideFormShellProps {
   form: UseFormReturn<GuideFormData>

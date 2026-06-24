@@ -1,8 +1,9 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
-import type { LocationConfirmAction, LocationFormValues } from "../types"
-import { locationFormSchema } from "../types"
+import type { LocationConfirmAction, LocationFormValues } from "../shared/types"
+import { locationFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 const EMPTY_VALUES: LocationFormValues = {

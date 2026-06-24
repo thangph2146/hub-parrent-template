@@ -16,8 +16,8 @@ import {
   ATTENDANCE_STATUS_LABELS,
   REGISTRATION_STATUS_LABELS,
   type MyRegisteredEventRow,
-} from "../types"
-import { canCancelRegistrationRow } from "../utils"
+} from "../shared/types"
+import { canCancelRegistrationRow } from "../shared/utils"
 
 export type MyRegisteredEventsTableProps = {
   rows: MyRegisteredEventRow[]

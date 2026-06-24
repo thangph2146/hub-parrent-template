@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query"
 import type { StoreSyncSdk } from "@workspace/api-client"
-import { ApiError } from "@workspace/admin-app/lib/api"
+import { ApiError } from "@workspace/api-client"
 import { queryKeys } from "@workspace/admin-app/hooks/queries"
 import { syncAdminSessionIfCurrentUser } from "@workspace/admin-app/lib/auth-session"
 import { useAdminMutation } from "@ui/hooks/use-admin-mutation"
 
-import type { StaffCreateInput, StaffUpdateInput } from "../staff-form.types"
+import type { StaffCreateInput, StaffUpdateInput } from "../_form/staff-form.types"
 
 function formatStaffUpdateDetails(data: unknown, input: StaffUpdateInput): string {
   const row =

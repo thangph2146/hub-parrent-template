@@ -11,7 +11,7 @@ import { Button } from "@ui/components/button"
 import { Input } from "@ui/components/input"
 import { Textarea } from "@ui/components/textarea"
 import { ImageUploadField } from "./image-upload-field"
-import type { GuideStep } from "../types"
+import type { GuideStep } from "../shared/types"
 
 interface StepEditorProps {
   steps: GuideStep[]

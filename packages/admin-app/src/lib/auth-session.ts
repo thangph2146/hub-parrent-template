@@ -2,7 +2,7 @@ import type { AuthUser, User } from "@workspace/api-client"
 import {
   fetchAdminSessionPayload,
   toAdminSessionUser,
-} from "@workspace/admin-app/modules/auth/_lib/auth-api"
+} from "@workspace/admin-app/lib/auth-api"
 
 export const ADMIN_SESSION_KEY = "storesync_admin_session"
 

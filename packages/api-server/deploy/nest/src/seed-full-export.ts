@@ -39,7 +39,7 @@ import {
   sanitizePivotRowsInExportJson,
   stripHeroSlidesPermissions,
   stripLegacyHeroSlideFromBundle,
-} from './common/module-bases/system/import-helpers';
+} from './common/module-bases/system/import/helpers';
 
 config();
 

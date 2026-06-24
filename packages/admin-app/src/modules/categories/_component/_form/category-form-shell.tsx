@@ -22,7 +22,7 @@ import {
 } from "@ui/components/pickers"
 import { Badge } from "@ui/components/badge"
 import { Controller, type UseFormReturn } from "react-hook-form"
-import type { CategoryTreeOption } from "../types"
+import type { CategoryTreeOption } from "../shared/types"
 import { cn } from "@ui/lib/utils"
 import { FolderTree, Globe, Layers, ListOrdered, Tag } from "lucide-react"
 import type { CategoryFormValues } from "../_hooks"

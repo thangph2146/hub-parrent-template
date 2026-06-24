@@ -1,8 +1,7 @@
 "use client"
-import { api } from "@workspace/admin-app/lib/api"
 import { useState, useCallback } from "react"
 import type { StoreSyncSdk } from "@workspace/api-client"
-import type { GuideGroup, GuideFormData } from "../types"
+import type { GuideGroup, GuideFormData } from "../shared/types"
 import {
   useCreateGuideMutation,
   useUpdateGuideMutation,

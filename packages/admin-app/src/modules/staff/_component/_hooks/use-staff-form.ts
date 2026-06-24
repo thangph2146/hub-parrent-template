@@ -1,12 +1,13 @@
+"use client"
 import { useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import type { StaffRow } from "../types"
+import type { StaffRow } from "../shared/types"
 import {
   buildStaffSubmitPayload,
   type StaffSubmitPayload,
-} from "../staff-form.types"
+} from "../_form/staff-form.types"
 import {
   STAFF_FORM_DEFAULT_VALUES,
   staffFormSchema,

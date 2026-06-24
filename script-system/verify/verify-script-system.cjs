@@ -13,11 +13,11 @@ const manifest = fs.existsSync(MANIFEST_PATH)
 const isDownstream = manifest.role === "downstream"
 
 const UPSTREAM_TOP_DIRS = ["lib", "sync", "git", "verify", "template"]
-const DOWNSTREAM_TOP_DIRS = ["lib", "sync", "verify"]
+const DOWNSTREAM_TOP_DIRS = ["lib", "sync", "verify", "admin", "db", "env", "git"]
 const ALLOWED_TOP_DIRS = new Set(isDownstream ? DOWNSTREAM_TOP_DIRS : UPSTREAM_TOP_DIRS)
 
 const UPSTREAM_CJS_DIRS = ["lib", "sync", "git", "verify"]
-const DOWNSTREAM_CJS_DIRS = ["lib", "sync", "verify"]
+const DOWNSTREAM_CJS_DIRS = ["lib", "sync", "verify", "admin", "db", "env", "git"]
 const ALLOWED_CJS_DIRS = new Set(isDownstream ? DOWNSTREAM_CJS_DIRS : UPSTREAM_CJS_DIRS)
 
 const UPSTREAM_SYNC_ROOT_SCRIPTS = [
@@ -40,7 +40,7 @@ const SYNC_ROOT_SCRIPTS = new Set(
   isDownstream ? DOWNSTREAM_SYNC_ROOT_SCRIPTS : UPSTREAM_SYNC_ROOT_SCRIPTS,
 )
 
-const GIT_ROOT_SCRIPTS = new Set(isDownstream ? [] : ["commit-and-push.cjs"])
+const GIT_ROOT_SCRIPTS = new Set(["commit-and-push.cjs"])
 
 /** @type {string[]} */
 const errors = []
@@ -49,7 +49,7 @@ function fail(msg) {
   errors.push(msg)
 }
 
-if (fs.existsSync(path.join(SCRIPT_SYSTEM, "lib", "monorepo-apps.cjs"))) {
+if (!isDownstream && fs.existsSync(path.join(SCRIPT_SYSTEM, "lib", "monorepo-apps.cjs"))) {
   fail("script-system/lib/monorepo-apps.cjs — dùng packages/api-server/deploy/config/product-lines.cjs")
 }
 
@@ -58,7 +58,9 @@ if (fs.existsSync(path.join(SCRIPT_SYSTEM, "deploy"))) {
 }
 
 if (fs.existsSync(path.join(SCRIPT_SYSTEM, "admin"))) {
-  fail("script-system/admin/ đã chuyển sang packages/admin-app/deploy/cli")
+  if (!isDownstream) {
+    fail("script-system/admin/ đã chuyển sang packages/admin-app/deploy/cli (upstream)")
+  }
 }
 
 if (fs.existsSync(path.join(SCRIPT_SYSTEM, "hub-parent"))) {
@@ -97,6 +99,11 @@ for (const entry of fs.readdirSync(SCRIPT_SYSTEM, { withFileTypes: true })) {
   }
 }
 
+function isAllowedCjsRel(rel) {
+  const top = rel.split("/")[0]
+  return ALLOWED_CJS_DIRS.has(top)
+}
+
 function walkCjs(dir, relBase = "") {
   if (!fs.existsSync(dir)) return
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -108,8 +115,7 @@ function walkCjs(dir, relBase = "") {
       continue
     }
     if (!entry.name.endsWith(".cjs")) continue
-    const parent = rel.includes("/") ? rel.slice(0, rel.lastIndexOf("/")) : ""
-    if (!ALLOWED_CJS_DIRS.has(parent)) {
+    if (!isAllowedCjsRel(rel)) {
       fail(`.cjs ngoài thư mục chuẩn: script-system/${rel}`)
     }
   }

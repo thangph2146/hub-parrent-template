@@ -18,7 +18,7 @@ import { Badge } from "@ui/components/badge"
 import { Controller, type UseFormReturn } from "react-hook-form"
 import { cn } from "@ui/lib/utils"
 import { Globe, ImageIcon, Tag } from "lucide-react"
-import type { TagFormValues } from "../types"
+import type { TagFormValues } from "../shared/types"
 
 export interface TagFormShellProps {
   form: UseFormReturn<TagFormValues>

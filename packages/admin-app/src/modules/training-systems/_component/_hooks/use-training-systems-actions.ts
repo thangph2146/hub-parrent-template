@@ -1,11 +1,12 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import type { UseMutationResult } from "@tanstack/react-query"
 import type {
   TrainingSystemConfirmAction,
   TrainingSystemFormValues,
-} from "../types"
-import { entityFormSchema } from "../types"
+} from "../shared/types"
+import { entityFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 const EMPTY_VALUES: TrainingSystemFormValues = { name: "", code: "", status: 1 }

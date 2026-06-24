@@ -1,7 +1,8 @@
+"use client"
 import { useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
-import type { ScreenConfirmAction, ScreenFormValues } from "../types"
-import { screenFormSchema } from "../types"
+import type { ScreenConfirmAction, ScreenFormValues } from "../shared/types"
+import { screenFormSchema } from "../shared/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 const EMPTY: ScreenFormValues = {
   name: "",
