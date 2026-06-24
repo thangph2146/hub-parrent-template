@@ -120,7 +120,7 @@ export function ScreensPageInner() {
   const hTCFC = useColumnFiltersChange(setTCF)
   const rowActions = useAdminCrudRowHandlers<ScreenRow>({
     getRecordLabel: (row) => row.name,
-    entityLabel: "m├án h├¼nh",
+    entityLabel: "màn hình",
     deleteMutation: delM,
     restoreMutation: resM,
     purgeMutation: purM,
@@ -153,12 +153,12 @@ export function ScreensPageInner() {
     <AdminPageSection>
       <AdminListPageHeader
         icon={Monitor}
-        title="M├án h├¼nh"
-        subtitle="Quß║ún l├╜ m├án h├¼nh."
+        title="Màn hình"
+        subtitle="Quản lý màn hình."
         actions={
           canWrite ? (
             <AdminPageHeaderPrimaryButton onClick={() => crudNav.new()}>
-              <Plus className="size-5" /> Th├¬m m├án h├¼nh
+              <Plus className="size-5" /> Thêm màn hình
             </AdminPageHeaderPrimaryButton>
           ) : undefined
         }
@@ -172,7 +172,7 @@ export function ScreensPageInner() {
       >
         <AdminListTabsList>
           <AdminListTabsTrigger value="list" >
-            Danh s├ích
+            Danh sách
             <AdminTabCountBadge count={listQ.data?.length ?? 0} />
           </AdminListTabsTrigger>
           {canWrite && (
@@ -180,7 +180,7 @@ export function ScreensPageInner() {
               value="trash"
               
             >
-              Th├╣ng r├íc
+              Thùng rác
               <AdminTabCountBadge count={trashQ.data?.total ?? 0} />
             </AdminListTabsTrigger>
           )}
@@ -191,7 +191,7 @@ export function ScreensPageInner() {
               <div className="flex items-start gap-3">
                 <AlertCircle className="mt-0.5 size-5 shrink-0" />
                 <div>
-                  <p className="font-semibold">Lß╗ùi</p>
+                  <p className="font-semibold">Lỗi</p>
                   <p className="mt-1 text-sm opacity-90">
                     {listQ.error.message}
                   </p>
@@ -231,7 +231,7 @@ export function ScreensPageInner() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="mt-0.5 size-5 shrink-0" />
                   <div>
-                    <p className="font-semibold">Lß╗ùi</p>
+                    <p className="font-semibold">Lỗi</p>
                   </div>
                 </div>
               </div>

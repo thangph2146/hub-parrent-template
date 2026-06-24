@@ -181,14 +181,14 @@ export function SeoMetasPageInner() {
     <AdminPageSection>
       <AdminListPageHeader
         title="SEO Metadata"
-        subtitle="Quß║ún l├╜ SEO metadata cho tß╗½ng trang trong hß╗ç thß╗æng"
+        subtitle="Quản lý SEO metadata cho từng trang trong hệ thống"
         icon={Search}
         readOnlyHint={
           user && !canWrite ? (
             <AdminReadOnlyHint>
-              Chß╗ë xem: cß║ºn quyß╗ün{" "}
-              <span className="font-mono">seo_metas:manage</span> ─æß╗â
-              th├¬m/sß╗¡a/xo├í.
+              Chỉ xem: cần quyền{" "}
+              <span className="font-mono">seo_metas:manage</span> để
+              thêm/sửa/xoá.
             </AdminReadOnlyHint>
           ) : undefined
         }
@@ -199,7 +199,7 @@ export function SeoMetasPageInner() {
                 type="button"
                 onClick={() => crudNav.new()}
               >
-                <Plus className="size-5" aria-hidden /> Th├¬m SEO
+                <Plus className="size-5" aria-hidden /> Thêm SEO
               </AdminPageHeaderPrimaryButton>
             )}
           </>
@@ -215,7 +215,7 @@ export function SeoMetasPageInner() {
       >
         <AdminListTabsList>
           <AdminListTabsTrigger value="list" >
-            Danh s├ích
+            Danh sách
             <AdminTabCountBadge count={listQuery.data?.length ?? 0} />
           </AdminListTabsTrigger>
           {canWrite && (
@@ -223,7 +223,7 @@ export function SeoMetasPageInner() {
               value="trash"
               
             >
-              Th├╣ng r├íc
+              Thùng rác
               <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
             </AdminListTabsTrigger>
           )}
@@ -235,7 +235,7 @@ export function SeoMetasPageInner() {
               <div className="flex items-start gap-3">
                 <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                 <div>
-                  <p className="font-semibold">Kh├┤ng tß║úi ─æ╞░ß╗úc danh s├ích</p>
+                  <p className="font-semibold">Không tải được danh sách</p>
                   <p className="mt-1 text-sm opacity-90">
                     {listQuery.error.message}
                   </p>
@@ -280,7 +280,7 @@ export function SeoMetasPageInner() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                   <div>
-                    <p className="font-semibold">Kh├┤ng tß║úi ─æ╞░ß╗úc th├╣ng r├íc</p>
+                    <p className="font-semibold">Không tải được thùng rác</p>
                     <p className="mt-1 text-sm opacity-90">
                       {trashQuery.error.message}
                     </p>

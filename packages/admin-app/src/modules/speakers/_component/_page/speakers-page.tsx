@@ -168,7 +168,7 @@ export function SpeakersPageInner() {
 
   const rowActions = useAdminCrudRowHandlers<SpeakerRow>({
     getRecordLabel: (row) => row.name,
-    entityLabel: "diß╗àn giß║ú",
+    entityLabel: "diễn giả",
     deleteMutation,
     restoreMutation,
     purgeMutation,
@@ -203,15 +203,15 @@ export function SpeakersPageInner() {
   return (
     <AdminPageSection>
       <AdminListPageHeader
-        title="Diß╗àn giß║ú"
-        subtitle="Quß║ún l├╜ diß╗àn giß║ú trong hß╗ç thß╗æng"
+        title="Diễn giả"
+        subtitle="Quản lý diễn giả trong hệ thống"
         icon={User}
         readOnlyHint={
           user && !canWrite ? (
             <AdminReadOnlyHint>
-              Chß╗ë xem: cß║ºn quyß╗ün{" "}
-              <span className="font-mono">speakers:manage</span> ─æß╗â
-              th├¬m/sß╗¡a/xo├í.
+              Chỉ xem: cần quyền{" "}
+              <span className="font-mono">speakers:manage</span> để
+              thêm/sửa/xoá.
             </AdminReadOnlyHint>
           ) : undefined
         }
@@ -222,7 +222,7 @@ export function SpeakersPageInner() {
                 type="button"
                 onClick={() => crudNav.new()}
               >
-                <Plus className="size-5" aria-hidden /> Th├¬m diß╗àn giß║ú
+                <Plus className="size-5" aria-hidden /> Thêm diễn giả
               </AdminPageHeaderPrimaryButton>
             )}
           </>
@@ -238,7 +238,7 @@ export function SpeakersPageInner() {
       >
         <AdminListTabsList>
           <AdminListTabsTrigger value="list" >
-            Danh s├ích
+            Danh sách
             <AdminTabCountBadge count={listQuery.data?.length ?? 0} />
           </AdminListTabsTrigger>
           {canWrite && (
@@ -246,7 +246,7 @@ export function SpeakersPageInner() {
               value="trash"
               
             >
-              Th├╣ng r├íc
+              Thùng rác
               <AdminTabCountBadge count={trashQuery.data?.total ?? 0} />
             </AdminListTabsTrigger>
           )}
@@ -258,7 +258,7 @@ export function SpeakersPageInner() {
               <div className="flex items-start gap-3">
                 <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                 <div>
-                  <p className="font-semibold">Kh├┤ng tß║úi ─æ╞░ß╗úc danh s├ích</p>
+                  <p className="font-semibold">Không tải được danh sách</p>
                   <p className="mt-1 text-sm opacity-90">
                     {listQuery.error.message}
                   </p>
@@ -301,7 +301,7 @@ export function SpeakersPageInner() {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden />
                   <div>
-                    <p className="font-semibold">Kh├┤ng tß║úi ─æ╞░ß╗úc th├╣ng r├íc</p>
+                    <p className="font-semibold">Không tải được thùng rác</p>
                     <p className="mt-1 text-sm opacity-90">
                       {trashQuery.error.message}
                     </p>
